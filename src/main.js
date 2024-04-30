@@ -1,15 +1,16 @@
 import EventPresenter from './presenter/event-presenter';
-import { render } from './render';
-import TripFiltersView from './view/trip-filters-view';
+import HeaderPresenter from './presenter/header-presenter';
 
 const start = () => {
-  const tripsContainer = document.querySelector('.trip-events');
-  const filtersContainer = document.querySelector('.trip-controls__filters');
+  const eventsElement = document.querySelector('.trip-events');
+  const filtersElement = document.querySelector('.trip-controls__filters');
+  const headerMainElement = document.querySelector('.trip-main');
 
-  const eventPresenter = new EventPresenter(tripsContainer);
+  const headerPresenter = new HeaderPresenter( { filterContainer: filtersElement, infoContainer: headerMainElement } );
+  const eventPresenter = new EventPresenter(eventsElement);
+
+  headerPresenter.init();
   eventPresenter.init();
-
-  render(new TripFiltersView(), filtersContainer);
 };
 
 start();
