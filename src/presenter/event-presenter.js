@@ -12,8 +12,6 @@ export default class EventPresenter {
 
   init() {
     this.tripEvents = [...this.model.getTripEvents()];
-    // this.destinations = [...this.model.getDestinations()];
-    // this.offers = [...this.model.getOffers()];
 
     render(new TripSortView(), this.container);
 
@@ -21,8 +19,6 @@ export default class EventPresenter {
     render(tripEventsList, this.container);
     render(new EventEditView(this.tripEvents[0]), tripEventsList.getElement());
 
-    for (const tripEvent of this.tripEvents) {
-      render(new TripEventView(tripEvent), tripEventsList.getElement());
-    }
+    this.tripEvents.forEach((tripEvent) => render(new TripEventView(tripEvent), tripEventsList.getElement()));
   }
 }
