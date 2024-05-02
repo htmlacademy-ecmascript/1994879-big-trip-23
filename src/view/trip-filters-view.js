@@ -1,6 +1,6 @@
 import { createElement } from '../render';
 
-const FILTER_TYPES = ['Everything', 'Future', 'present', 'Past'];
+const FILTER_TYPES = ['Everything', 'Future', 'Present', 'Past'];
 
 const createFilterItemtemplate = (type) => {
   const lowerType = type.toLowerCase();
