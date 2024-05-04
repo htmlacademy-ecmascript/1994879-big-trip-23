@@ -10,7 +10,13 @@ const start = () => {
   const tripEventModel = new TripEventModel();
   tripEventModel.init();
 
-  const headerPresenter = new HeaderPresenter({ filterContainer: filtersElement, infoContainer: headerMainElement });
+  const headerPresenter = new HeaderPresenter(
+    {
+      filterContainer: filtersElement,
+      infoContainer: headerMainElement,
+      model: tripEventModel
+    }
+  );
   const eventPresenter = new EventPresenter({ container: eventsElement, model: tripEventModel });
 
   headerPresenter.init();
