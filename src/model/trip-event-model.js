@@ -1,26 +1,18 @@
 import { getMockedEvents } from '../mock/event-mock';
 import { getMockedDestionations } from '../mock/destination-mock';
 import { getMockedOffers } from '../mock/offer-mock';
-import { getRandomBoolean } from '../mock/utils';
 
 export default class TripEventModel {
   constructor() {
+    this.destinations = [];
+    this.offers = [];
+    this.tripEvents = [];
+  }
+
+  init() {
     this.destinations = getMockedDestionations();
     this.offers = getMockedOffers();
-
-    this.tripEvents = getMockedEvents().map((tripEvent) => {
-      const { offers } = this.offers.find((offer) => offer.type === tripEvent.type);
-
-      return {
-        ...tripEvent,
-        destination: this.destinations.find((dest) => dest.id === tripEvent.destination),
-        offers: offers.map((offer) => ({
-          type: tripEvent.type,
-          ...offer,
-          selected: getRandomBoolean(),
-        })),
-      };
-    });
+    this.tripEvents = getMockedEvents();
   }
 
   getTripEvents() {

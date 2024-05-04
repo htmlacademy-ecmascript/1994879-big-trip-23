@@ -1,15 +1,14 @@
 import { createElement } from '../render';
+import { firstLetterUpperCase } from '../utils';
 
 const FILTER_TYPES = ['Everything', 'Future', 'Present', 'Past'];
 
-const createFilterItemtemplate = (type) => {
-  const lowerType = type.toLowerCase();
-  return `
-    <div class="trip-filters__filter">
-      <input id="filter-${lowerType}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${lowerType}" checked>
-      <label class="trip-filters__filter-label" for="filter-${lowerType}">${type}</label>
-    </div>`;
-};
+const createFilterItemtemplate = (type) => `
+  <div class="trip-filters__filter">
+    <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" checked>
+    <label class="trip-filters__filter-label" for="filter-${type}">${firstLetterUpperCase(type)}</label>
+  </div>
+`;
 
 const createFiltersTemplate = () => `
   <form class="trip-filters" action="#" method="get">

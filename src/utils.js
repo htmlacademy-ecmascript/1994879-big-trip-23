@@ -27,4 +27,9 @@ const displayDate = (date) => date ? dayjs(date).format(DateFormats.DATE) : '';
 const displayTime = (time) => time ? dayjs(time).format(DateFormats.TIME) : '';
 const displayDateTime = (date, dateFormat = DateFormats.DATE_TIME_SYSTEM) => date ? dayjs(date).format(dateFormat) : '';
 
-export { calculateDuration, displayDate, displayDateMonth, displayTime, displayDateTime };
+const firstLetterUpperCase = (word) => {
+  const [firstLetter,...rest] = word;
+  return `${firstLetter.toUpperCase()}${rest.join('')}`;
+};
+
+export { calculateDuration, displayDate, displayDateMonth, displayTime, displayDateTime, firstLetterUpperCase };
