@@ -8,20 +8,32 @@ export default class TripEventModel {
   #tripEvents = [];
 
   init() {
-    this.#destinations = getMockedDestionations();
-    this.#offers = getMockedOffers();
-    this.#tripEvents = getMockedEvents();
+    this.destinations = getMockedDestionations();
+    this.offers = getMockedOffers();
+    this.tripEvents = getMockedEvents();
   }
 
-  getTripEvents() {
+  get tripEvents() {
     return this.#tripEvents;
   }
 
-  getOffers() {
+  set tripEvents(tripEvents) {
+    this.#tripEvents = tripEvents;
+  }
+
+  get offers() {
     return this.#offers;
   }
 
-  getDestinations() {
+  set offers(offers) {
+    this.#offers = offers;
+  }
+
+  get destinations() {
     return this.#destinations;
+  }
+
+  set destinations(descriptions) {
+    this.#destinations = descriptions;
   }
 }

@@ -3,16 +3,26 @@ import TripFiltersView from '../view/trip-filters-view';
 import TripInfoView from '../view/trip-info-view';
 
 export default class HeaderPresenter {
+  #model = null;
+  #filterContainer = null;
+  #infoContainer = null;
+
   constructor ({ container, model }) {
-    this.filterContainer = container.filter;
-    this.infoContainer = container.info;
-    this.model = model;
+    this.#filterContainer = container.filter;
+    this.#infoContainer = container.info;
+    this.#model = model;
   }
 
   init() {
-    const tripEvents = this.model.getTripEvents();
+    this.#renderSummary(this.#model.tripEvents);
+    this.#renderFilters();
+  }
 
-    render(new TripInfoView(tripEvents), this.infoContainer, RenderPosition.AFTERBEGIN);
-    render(new TripFiltersView(), this.filterContainer);
+  #renderSummary(tripEvents) {
+    render(new TripInfoView(tripEvents), this.#infoContainer, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderFilters() {
+    render(new TripFiltersView(), this.#filterContainer);
   }
 }
