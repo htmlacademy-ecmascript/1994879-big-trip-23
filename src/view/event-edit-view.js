@@ -131,15 +131,40 @@ export default class EventEditView extends AbstractView {
   #tripEvent = null;
   #offers = null;
   #destinations = null;
+  #submitHandler = null;
+  #cancelHandler = null;
 
-  constructor(tripEvent = BLANK_TRIP_EVENT, offers, destinations) {
+  constructor({tripEvent = BLANK_TRIP_EVENT, offers, destinations, onFormSubmit, onFormCancel}) {
     super();
     this.#tripEvent = tripEvent;
     this.#offers = offers;
     this.#destinations = destinations;
+    this.#submitHandler = onFormSubmit;
+    this.#cancelHandler = onFormCancel;
+
+    this.element.addEventListener('submit', this.#onFormSubmit);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onCancelForm);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#onCancelForm);
   }
 
   get template() {
     return createEventEditTemplate(this.#tripEvent, this.#offers, this.#destinations);
   }
+
+  removeElement() {
+    super.removeElement();
+    this.element.removeEventListener('submit', this.#onFormSubmit);
+    this.element.querySelector('.event__rollup-btn').removeEventListener('click', this.#onCancelForm);
+    this.element.querySelector('.event__reset-btn').removeEventListener('click', this.#onCancelForm);
+  }
+
+  #onFormSubmit = (evt) => {
+    evt.preventDefault();
+    this.#submitHandler();
+  };
+
+  #onCancelForm = (evt) => {
+    evt.preventDefault();
+    this.#submitHandler();
+  };
 }

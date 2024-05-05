@@ -3,7 +3,7 @@ import { getId, getRandomArrayElement, getRandomBoolean, getRandomInt, getDateWi
 import { getRandomDestination } from './destination-mock';
 import { getMockedOffers } from './offer-mock';
 
-const EVENTS_COUNT = 4;
+const EVENTS_COUNT = 5;
 const OFFERS_LIMIT = 3;
 
 const mockedOffers = getMockedOffers();
