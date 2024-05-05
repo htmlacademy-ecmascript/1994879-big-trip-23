@@ -24,7 +24,7 @@ export default class EventPresenter {
     render(new TripSortView(), this.#container);
   }
 
-  #renderTripEvents({tripEvents, offers, destinations}) {
+  #renderTripEvents({tripEvents}) {
     render(this.#tripEventsView, this.#container);
     tripEvents.forEach((tripEvent) => this.#renderTripEvent(tripEvent));
   }
