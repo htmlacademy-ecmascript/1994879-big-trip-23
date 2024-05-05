@@ -12,12 +12,19 @@ const start = () => {
 
   const headerPresenter = new HeaderPresenter(
     {
-      filterContainer: filtersElement,
-      infoContainer: headerMainElement,
+      container: {
+        filter: filtersElement,
+        info: headerMainElement
+      },
       model: tripEventModel
     }
   );
-  const eventPresenter = new EventPresenter({ container: eventsElement, model: tripEventModel });
+  const eventPresenter = new EventPresenter(
+    {
+      container: eventsElement,
+      model: tripEventModel
+    }
+  );
 
   headerPresenter.init();
   eventPresenter.init();

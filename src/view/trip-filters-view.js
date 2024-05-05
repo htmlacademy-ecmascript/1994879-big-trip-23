@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import { firstLetterUpperCase } from '../utils';
 
 const FILTER_TYPES = ['Everything', 'Future', 'Present', 'Past'];
@@ -18,19 +18,8 @@ const createFiltersTemplate = () => `
   </form>
 `;
 
-export default class TripFiltersView {
-  getTemplate() {
+export default class TripFiltersView extends AbstractView {
+  get template() {
     return createFiltersTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

@@ -1,11 +1,11 @@
-import { render, RenderPosition } from '../render';
+import { render, RenderPosition } from '../framework/render';
 import TripFiltersView from '../view/trip-filters-view';
 import TripInfoView from '../view/trip-info-view';
 
 export default class HeaderPresenter {
-  constructor ({ filterContainer, infoContainer, model }) {
-    this.filterContainer = filterContainer;
-    this.infoContainer = infoContainer;
+  constructor ({ container, model }) {
+    this.filterContainer = container.filter;
+    this.infoContainer = container.info;
     this.model = model;
   }
 

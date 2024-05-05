@@ -1,5 +1,5 @@
-import { createElement } from '../render';
 import { BLANK_TRIP_EVENT, EVENT_TYPES, DateFormats } from '../const';
+import AbstractView from '../framework/view/abstract-view';
 import { displayDateTime, firstLetterUpperCase } from '../utils';
 
 
@@ -127,25 +127,19 @@ const createEventEditTemplate = (tripEvent, offers, destinations) => {
   </form>`;
 };
 
-export default class EventEditView {
+export default class EventEditView extends AbstractView {
+  #tripEvent = null;
+  #offers = null;
+  #destinations = null;
+
   constructor(tripEvent = BLANK_TRIP_EVENT, offers, destinations) {
-    this.tripEvent = tripEvent;
-    this.offers = offers;
-    this.destinations = destinations;
+    super();
+    this.#tripEvent = tripEvent;
+    this.#offers = offers;
+    this.#destinations = destinations;
   }
 
-  getTemplate() {
-    return createEventEditTemplate(this.tripEvent, this.offers, this.destinations);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createEventEditTemplate(this.#tripEvent, this.#offers, this.#destinations);
   }
 }

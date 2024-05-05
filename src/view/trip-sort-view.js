@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import { firstLetterUpperCase } from '../utils';
 
 const SORT_TYPES = ['day', 'event', 'time', 'price', 'offers'];
@@ -16,19 +16,8 @@ const createFiltersTemplate = () => `
   </form>
 `;
 
-export default class TripSortView {
-  getTemplate() {
+export default class TripSortView extends AbstractView {
+  get template() {
     return createFiltersTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }
