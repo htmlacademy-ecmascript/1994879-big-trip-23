@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import { displayDate, displayDateMonth, displayTime, displayDateTime, calculateDuration } from '../utils';
 
 const createEventScheduleTemplate = (dateFrom, dateTo) => `
@@ -26,25 +26,28 @@ const createOffersTemplate = (offers) => {
   `).join('');
 };
 
-const createTripEventTemplate = (tripEvent) => {
-  const {type, dateFrom, dateTo, destination, price, offers, isFavorite} = tripEvent;
+const createTripEventTemplate = (tripEvent, offers, destinations) => {
+  const {type, dateFrom, dateTo, price, isFavorite} = tripEvent;
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
+  const {name: destinationName} = destinations.find((destination) => destination.id === tripEvent.destination);
+  const {offers: typedOffers} = offers.find((offer) => offer.type === type);
+  const selectedOffers = typedOffers.filter((offer) => tripEvent.offers.includes(offer.id));
 
   return `
   <li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="${displayDate(dateFrom)}">${displayDateMonth(dateFrom)}</time>
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${type} ${destination.name}</h3>
+      <h3 class="event__title">${type} ${destinationName}</h3>
       ${createEventScheduleTemplate(dateFrom, dateTo)}
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${price}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        ${createOffersTemplate(offers)}
+        ${createOffersTemplate(selectedOffers)}
       </ul>
       <button class="event__favorite-btn ${favoriteClassName}" type="button">
         <span class="visually-hidden">Add to favorite</span>
@@ -59,23 +62,34 @@ const createTripEventTemplate = (tripEvent) => {
   </li>`;
 };
 
-export default class TripEventView {
-  constructor(tripEvent) {
-    this.tripEvent = tripEvent;
+export default class TripEventView extends AbstractView {
+  #tripEvent = null;
+  #offers = null;
+  #destinations = null;
+  #clickHandler = null;
+  #rollupButton = null;
+
+  constructor({tripEvent, offers, destinations, onEditClick}) {
+    super();
+    this.#tripEvent = tripEvent;
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this.#clickHandler = onEditClick;
+    this.#rollupButton = this.element.querySelector('.event__rollup-btn');
+    this.#rollupButton.addEventListener('click', this.#onClick);
   }
 
-  getTemplate() {
-    return createTripEventTemplate(this.tripEvent);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
+  get template() {
+    return createTripEventTemplate(this.#tripEvent, this.#offers, this.#destinations);
   }
 
   removeElement() {
-    this.element = null;
+    super.removeElement();
+    this.#rollupButton.removeEventListener('click', this.#onClick);
   }
+
+  #onClick = (evt) => {
+    evt.preventDefault();
+    this.#clickHandler();
+  };
 }

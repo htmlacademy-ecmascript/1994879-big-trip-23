@@ -1,6 +1,7 @@
 const DEFAULT_EVENT_TYPE = 'Flight';
 
 const BLANK_TRIP_EVENT = {
+  id: 0,
   type: DEFAULT_EVENT_TYPE,
   dateFrom: new Date(),
   dateTo: null,
@@ -10,7 +11,7 @@ const BLANK_TRIP_EVENT = {
   isFavorite: false,
 };
 
-const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
+const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 const DateFormats = {
   DATE_MONTH: 'MMM D',
