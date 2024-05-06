@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
-import { displayDate, displayDateMonth, displayTime, displayDateTime, calculateDuration } from '../utils';
+import { displayDate, displayDateMonth, displayTime, displayDateTime, calculateDuration } from '../utils/date';
+import { isEmpty } from '../utils/common';
 
 const createEventScheduleTemplate = (dateFrom, dateTo) => `
   <div class="event__schedule">
@@ -13,7 +14,7 @@ const createEventScheduleTemplate = (dateFrom, dateTo) => `
 `;
 
 const createOffersTemplate = (offers) => {
-  if (offers.length === 0) {
+  if (isEmpty(offers)) {
     return '';
   }
 
@@ -67,7 +68,7 @@ export default class TripEventView extends AbstractView {
   #offers = null;
   #destinations = null;
   #clickHandler = null;
-  #rollupButton = null;
+  #rollupButtonElement = null;
 
   constructor({tripEvent, offers, destinations, onEditClick}) {
     super();
@@ -75,8 +76,8 @@ export default class TripEventView extends AbstractView {
     this.#offers = offers;
     this.#destinations = destinations;
     this.#clickHandler = onEditClick;
-    this.#rollupButton = this.element.querySelector('.event__rollup-btn');
-    this.#rollupButton.addEventListener('click', this.#onClick);
+    this.#rollupButtonElement = this.element.querySelector('.event__rollup-btn');
+    this.#rollupButtonElement.addEventListener('click', this.#onClick);
   }
 
   get template() {
@@ -85,7 +86,7 @@ export default class TripEventView extends AbstractView {
 
   removeElement() {
     super.removeElement();
-    this.#rollupButton.removeEventListener('click', this.#onClick);
+    this.#rollupButtonElement.removeEventListener('click', this.#onClick);
   }
 
   #onClick = (evt) => {

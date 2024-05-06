@@ -1,23 +1,31 @@
 import AbstractView from '../framework/view/abstract-view';
-import { firstLetterUpperCase } from '../utils';
+import { firstLetterUpperCase } from '../utils/common';
+import { calculateChecked } from '../utils/common';
 
-const SORT_TYPES = ['day', 'event', 'time', 'price', 'offers'];
-
-const createSortItemtemplate = (type) => `
+const createSortItemTemplate = (type, isChecked) => `
   <div class="trip-sort__item  trip-sort__item--${type}">
-    <input id="sort-${type}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" checked>
+    <input id="sort-${type}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${type}" ${calculateChecked(isChecked)}>
     <label class="trip-sort__btn" for="sort-${type}">${firstLetterUpperCase(type)}</label>
   </div>
 `;
 
-const createFiltersTemplate = () => `
+const createFiltersTemplate = (sortTypes, currentSortType) => `
   <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-    ${SORT_TYPES.map((type) => createSortItemtemplate(type)).join('')}
+    ${sortTypes.map((type) => createSortItemTemplate(type, type === currentSortType)).join('')}
   </form>
 `;
 
 export default class TripSortView extends AbstractView {
+  #sortTypes = [];
+  #currentSortType = '';
+
+  constructor({sortTypes, currentSortType}) {
+    super();
+    this.#sortTypes = sortTypes;
+    this.#currentSortType = currentSortType;
+  }
+
   get template() {
-    return createFiltersTemplate();
+    return createFiltersTemplate(this.#sortTypes, this.#currentSortType);
   }
 }

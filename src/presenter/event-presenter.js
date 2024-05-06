@@ -1,8 +1,10 @@
 import { render, replace } from '../framework/render';
+import { isEmpty } from '../utils/common';
 import TripSortView from '../view/trip-sort-view';
 import TripEventsView from '../view/trip-events-view';
 import TripEventView from '../view/trip-event-view';
 import EventEditView from '../view/event-edit-view';
+import TripEmptyView from '../view/trip-empty-view';
 
 export default class EventPresenter {
   #model = null;
@@ -16,15 +18,24 @@ export default class EventPresenter {
   }
 
   init() {
-    this.#renderSortView();
     this.#renderTripEvents(this.#model);
   }
 
+  #renderEmptyView() {
+    render(new TripEmptyView({filter: this.#model.filters[0]}), this.#container);
+  }
+
   #renderSortView() {
-    render(new TripSortView(), this.#container);
+    render(new TripSortView({sortTypes: this.#model.sortTypes, currentSortType: this.#model.sortTypes[0]}), this.#container);
   }
 
   #renderTripEvents({tripEvents}) {
+    if (isEmpty(tripEvents)) {
+      this.#renderEmptyView();
+      return;
+    }
+
+    this.#renderSortView();
     render(this.#tripEventsView, this.#container);
     tripEvents.forEach((tripEvent) => this.#renderTripEvent(tripEvent));
   }
