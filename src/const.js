@@ -12,6 +12,21 @@ const BLANK_TRIP_EVENT = {
 };
 
 const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+const SORT_TYPES = ['day', 'event', 'time', 'price', 'offers'];
+
+const Filters = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
+};
+
+const TripEmptyMessages = {
+  [Filters.EVERYTHING]: 'Click New Event to create your first point',
+  [Filters.FUTURE]: 'There are no past events now',
+  [Filters.PRESENT]: 'There are no present events now',
+  [Filters.PAST]: 'There are no future events now',
+};
 
 const DateFormats = {
   DATE_MONTH: 'MMM D',
@@ -24,4 +39,4 @@ const DateFormats = {
   MINUTES: 'mm[m]'
 };
 
-export { BLANK_TRIP_EVENT, EVENT_TYPES, DateFormats };
+export { BLANK_TRIP_EVENT, EVENT_TYPES, SORT_TYPES, Filters, TripEmptyMessages, DateFormats };

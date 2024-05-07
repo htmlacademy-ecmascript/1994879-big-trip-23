@@ -15,14 +15,14 @@ export default class HeaderPresenter {
 
   init() {
     this.#renderSummary(this.#model.tripEvents);
-    this.#renderFilters();
+    this.#renderFilters(this.#model.filters);
   }
 
   #renderSummary(tripEvents) {
     render(new TripInfoView(tripEvents), this.#infoContainer, RenderPosition.AFTERBEGIN);
   }
 
-  #renderFilters() {
-    render(new TripFiltersView(), this.#filterContainer);
+  #renderFilters(filters) {
+    render(new TripFiltersView({filters, currentFilter: filters[-1]}), this.#filterContainer);
   }
 }

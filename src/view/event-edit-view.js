@@ -1,11 +1,11 @@
 import { BLANK_TRIP_EVENT, EVENT_TYPES, DateFormats } from '../const';
 import AbstractView from '../framework/view/abstract-view';
-import { displayDateTime, firstLetterUpperCase } from '../utils';
-
+import { displayDateTime } from '../utils/date';
+import { firstLetterUpperCase, calculateChecked } from '../utils/common';
 
 const createEventTypeItemTemplate = (id, type, isChecked) => `
   <div class="event__type-item">
-    <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isChecked ? 'checked' : ''}>
+    <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${calculateChecked(isChecked)}>
     <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${id}">${firstLetterUpperCase(type)}</label>
   </div>
 `;
@@ -133,6 +133,8 @@ export default class EventEditView extends AbstractView {
   #destinations = null;
   #submitHandler = null;
   #cancelHandler = null;
+  #rollupButtonElement = null;
+  #resetButtonElement = null;
 
   constructor({tripEvent = BLANK_TRIP_EVENT, offers, destinations, onFormSubmit, onFormCancel}) {
     super();
@@ -143,8 +145,11 @@ export default class EventEditView extends AbstractView {
     this.#cancelHandler = onFormCancel;
 
     this.element.addEventListener('submit', this.#onFormSubmit);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onCancelForm);
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#onCancelForm);
+    this.#rollupButtonElement = this.element.querySelector('.event__rollup-btn');
+    this.#resetButtonElement = this.element.querySelector('.event__reset-btn');
+
+    this.#rollupButtonElement.addEventListener('click', this.#onCancelForm);
+    this.#resetButtonElement.addEventListener('click', this.#onCancelForm);
   }
 
   get template() {
@@ -154,8 +159,8 @@ export default class EventEditView extends AbstractView {
   removeElement() {
     super.removeElement();
     this.element.removeEventListener('submit', this.#onFormSubmit);
-    this.element.querySelector('.event__rollup-btn').removeEventListener('click', this.#onCancelForm);
-    this.element.querySelector('.event__reset-btn').removeEventListener('click', this.#onCancelForm);
+    this.#rollupButtonElement.removeEventListener('click', this.#onCancelForm);
+    this.#resetButtonElement.removeEventListener('click', this.#onCancelForm);
   }
 
   #onFormSubmit = (evt) => {
@@ -165,6 +170,6 @@ export default class EventEditView extends AbstractView {
 
   #onCancelForm = (evt) => {
     evt.preventDefault();
-    this.#submitHandler();
+    this.#cancelHandler();
   };
 }
