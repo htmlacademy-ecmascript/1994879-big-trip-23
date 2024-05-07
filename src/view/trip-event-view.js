@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import { displayDate, displayDateMonth, displayTime, displayDateTime, calculateDuration } from '../utils/date';
+import { displayDate, displayDateMonth, displayTime, displayDateTime, getDuration } from '../utils/date';
 import { isEmpty } from '../utils/common';
 
 const createEventScheduleTemplate = (dateFrom, dateTo) => `
@@ -9,7 +9,7 @@ const createEventScheduleTemplate = (dateFrom, dateTo) => `
     &mdash;
     <time class="event__end-time" datetime="${displayDateTime(dateTo)}">${displayTime(dateTo)}</time>
   </p>
-  <p class="event__duration">${calculateDuration(dateFrom, dateTo)}</p>
+  <p class="event__duration">${getDuration(dateFrom, dateTo)}</p>
 </div>
 `;
 
