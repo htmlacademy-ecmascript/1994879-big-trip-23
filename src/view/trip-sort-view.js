@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
-import { firstLetterUpperCase } from '../utils/common';
-import { getIsCheckedAttr } from '../utils/common';
+import { firstLetterUpperCase } from './utils/common';
+import { getIsCheckedAttr } from './utils/common';
 
 const createSortItemTemplate = (type, isChecked) => `
   <div class="trip-sort__item  trip-sort__item--${type}">
