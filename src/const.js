@@ -11,7 +11,17 @@ const BLANK_TRIP_EVENT = {
   isFavorite: false,
 };
 
-const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+const EVENT_TYPES = [
+  'taxi',
+  'bus',
+  'train',
+  'ship',
+  'drive',
+  'flight',
+  'check-in',
+  'sightseeing',
+  'restaurant',
+];
 const SORT_TYPES = ['day', 'event', 'time', 'price', 'offers'];
 
 const Filters = {
@@ -36,7 +46,14 @@ const DateFormats = {
   DATE_TIME: 'YY/MM/DD HH:mm',
   DAY: 'DD[d] HH[h] mm[m]',
   HOURS: 'HH[h] mm[m]',
-  MINUTES: 'mm[m]'
+  MINUTES: 'mm[m]',
 };
 
-export { BLANK_TRIP_EVENT, EVENT_TYPES, SORT_TYPES, Filters, TripEmptyMessages, DateFormats };
+export {
+  BLANK_TRIP_EVENT,
+  EVENT_TYPES,
+  SORT_TYPES,
+  Filters,
+  TripEmptyMessages,
+  DateFormats
+};
