@@ -22,9 +22,7 @@ const createMockEvent = () => {
   const offersByType = mockedOffers.find((offer) => offer.type === type);
   const offers =
     offersByType.offers.length > 0
-      ? Array.from({ length: getRandomInt(OFFERS_LIMIT) }, () =>
-          getRandomArrayElement(offersByType.offers)
-        )
+      ? Array.from({ length: getRandomInt(OFFERS_LIMIT) }, () => getRandomArrayElement(offersByType.offers))
       : [];
   const offerIds = offers.length > 0 ? offers.map((offer) => offer.id) : [];
 

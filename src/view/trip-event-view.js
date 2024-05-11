@@ -83,7 +83,7 @@ export default class TripEventView extends AbstractView {
     this.#favoriteButtonElement = this.element.querySelector('.event__favorite-btn');
 
     this.#rollupButtonElement.addEventListener('click', this.#onClick);
-    this.#favoriteButtonElement.addEventListener('click', this.#onFavoriteClick)
+    this.#favoriteButtonElement.addEventListener('click', this.#onFavoriteClick);
   }
 
   get template() {
@@ -93,7 +93,7 @@ export default class TripEventView extends AbstractView {
   removeElement() {
     super.removeElement();
     this.#rollupButtonElement.removeEventListener('click', this.#onClick);
-    this.#favoriteButtonElement.removeEventListener('click', this.#onFavoriteClick)
+    this.#favoriteButtonElement.removeEventListener('click', this.#onFavoriteClick);
   }
 
   #onClick = (evt) => {
@@ -104,5 +104,5 @@ export default class TripEventView extends AbstractView {
   #onFavoriteClick = (evt) => {
     evt.preventDefault();
     this.#favoriteClickHandler();
-  }
+  };
 }

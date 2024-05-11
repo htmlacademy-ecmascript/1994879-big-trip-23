@@ -70,7 +70,7 @@ export default class TripPresenter {
   #onTripEventChange = (updatedTripEvent) => {
     this.#tripEvents = updateItem(this.#tripEvents, updatedTripEvent);
     this.#eventPresenters.get(updatedTripEvent.id).init(updatedTripEvent);
-  }
+  };
 
   #onTripEventModeChange = () => this.#eventPresenters.forEach((presenter) => presenter.resetView());
 }
