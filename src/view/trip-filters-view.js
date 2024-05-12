@@ -1,9 +1,9 @@
 import AbstractView from '../framework/view/abstract-view';
-import { firstLetterUpperCase, calculateChecked } from '../utils/common';
+import { firstLetterUpperCase, getIsCheckedAttr } from './utils/common';
 
 const createFilterItemTemplate = (value, isChecked) => `
   <div class="trip-filters__filter">
-    <input id="filter-${value}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${value}" ${calculateChecked(isChecked)}>
+    <input id="filter-${value}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${value}" ${getIsCheckedAttr(isChecked)}>
     <label class="trip-filters__filter-label" for="filter-${value}">${firstLetterUpperCase(value)}</label>
   </div>
 `;

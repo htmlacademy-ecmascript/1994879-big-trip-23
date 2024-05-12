@@ -1,11 +1,11 @@
 import { BLANK_TRIP_EVENT, EVENT_TYPES, DateFormats } from '../const';
 import AbstractView from '../framework/view/abstract-view';
-import { displayDateTime } from '../utils/date';
-import { firstLetterUpperCase, calculateChecked } from '../utils/common';
+import { displayDateTime } from './utils/date';
+import { firstLetterUpperCase, getIsCheckedAttr } from './utils/common';
 
 const createEventTypeItemTemplate = (id, type, isChecked) => `
   <div class="event__type-item">
-    <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${calculateChecked(isChecked)}>
+    <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${getIsCheckedAttr(isChecked)}>
     <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${id}">${firstLetterUpperCase(type)}</label>
   </div>
 `;
@@ -165,7 +165,7 @@ export default class EventEditView extends AbstractView {
 
   #onFormSubmit = (evt) => {
     evt.preventDefault();
-    this.#submitHandler();
+    this.#submitHandler(this.#tripEvent);
   };
 
   #onCancelForm = (evt) => {

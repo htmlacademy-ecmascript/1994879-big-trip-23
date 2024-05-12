@@ -1,86 +1,117 @@
-import { render, replace } from '../framework/render';
-import { isEmpty } from '../utils/common';
-import TripSortView from '../view/trip-sort-view';
-import TripEventsView from '../view/trip-events-view';
-import TripEventView from '../view/trip-event-view';
 import EventEditView from '../view/event-edit-view';
-import TripEmptyView from '../view/trip-empty-view';
+import TripEventView from '../view/trip-event-view';
+import { render, replace, remove } from '../framework/render';
+
+const Mode = {
+  VIEW: 'View',
+  EDIT: 'Edit',
+};
 
 export default class EventPresenter {
+  #tripEvent = null;
   #model = null;
   #container = null;
-  #tripEventsView = null;
+  #tripEventView = null;
+  #eventEditView = null;
+  #tripEventChangeHandler = null;
+  #changeModeHandler = null;
+  #mode = Mode.VIEW;
 
-  constructor ({container, model}) {
-    this.#container = container;
+  constructor({ model, container, onTripEventChange, onModeChange }) {
     this.#model = model;
-    this.#tripEventsView = new TripEventsView();
+    this.#container = container;
+    this.#tripEventChangeHandler = onTripEventChange;
+    this.#changeModeHandler = onModeChange;
   }
 
-  init() {
-    this.#renderTripEvents(this.#model);
-  }
-
-  #renderEmptyView() {
-    render(new TripEmptyView({filter: this.#model.filters[0]}), this.#container);
-  }
-
-  #renderSortView() {
-    render(new TripSortView({sortTypes: this.#model.sortTypes, currentSortType: this.#model.sortTypes[0]}), this.#container);
-  }
-
-  #renderTripEvents({tripEvents}) {
-    if (isEmpty(tripEvents)) {
-      this.#renderEmptyView();
-      return;
-    }
-
-    this.#renderSortView();
-    render(this.#tripEventsView, this.#container);
-    tripEvents.forEach((tripEvent) => this.#renderTripEvent(tripEvent));
+  init(tripEvent) {
+    this.#tripEvent = tripEvent;
+    this.#renderTripEvent(tripEvent);
   }
 
   #renderTripEvent(tripEvent) {
     const offers = this.#model.offers;
     const destinations = this.#model.destinations;
 
-    const onEscKeydown = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        switchToViewMode();
-      }
-    };
+    const prevTripEventView = this.#tripEventView;
+    const prevEventEditView = this.#eventEditView;
 
-    const onEditClick = () => switchToEditMode();
-    const onFormSubmit = () => switchToViewMode();
-    const onFormCancel = () => switchToViewMode();
-
-    const tripEventView = new TripEventView({
+    this.#tripEventView = new TripEventView({
       tripEvent,
       offers,
       destinations,
-      onEditClick: onEditClick,
+      onEditClick: this.#onEditClick,
+      onFavoriteClick: this.#onFavoriteClick,
     });
 
-    const eventEditView = new EventEditView({
+    this.#eventEditView = new EventEditView({
       tripEvent,
       offers,
       destinations,
-      onFormSubmit: onFormSubmit,
-      onFormCancel: onFormCancel,
+      onFormSubmit: this.#onFormSubmit,
+      onFormCancel: this.#onFormCancel,
     });
 
-    function switchToEditMode() {
-      replace(eventEditView, tripEventView);
-      document.addEventListener('keydown', onEscKeydown);
+    if (prevTripEventView === null || prevEventEditView === null) {
+      render(this.#tripEventView, this.#container);
+      return;
     }
 
-    function switchToViewMode() {
-      replace(tripEventView, eventEditView);
-      document.removeEventListener('keydown', onEscKeydown);
+    if (this.#mode === Mode.EDIT) {
+      replace(this.#eventEditView, prevEventEditView);
     }
 
-    render(tripEventView, this.#tripEventsView.element);
+    if (this.#mode === Mode.VIEW) {
+      replace(this.#tripEventView, prevTripEventView);
+    }
+
+    remove(prevTripEventView);
+    remove(prevEventEditView);
   }
 
+  destroy() {
+    remove(this.#tripEventView);
+    remove(this.#eventEditView);
+  }
+
+  resetView() {
+    if (this.#mode !== Mode.VIEW) {
+      this.#switchToViewMode();
+    }
+  }
+
+  #onEditClick = () => this.#switchToEditMode();
+  #onFormCancel = () => this.#switchToViewMode();
+
+  #onFormSubmit = (tripEvent) => {
+    this.#tripEventChangeHandler(tripEvent);
+    this.#switchToViewMode();
+  };
+
+  #onFavoriteClick = () => this.#tripEventChangeHandler({
+    ...this.#tripEvent,
+    isFavorite: !this.#tripEvent.isFavorite,
+  });
+
+  #switchToEditMode() {
+    replace(this.#eventEditView, this.#tripEventView);
+    document.addEventListener('keydown', this.#onEscKeydown);
+
+    this.#changeModeHandler();
+    this.#mode = Mode.EDIT;
+  }
+
+  #switchToViewMode() {
+    replace(this.#tripEventView, this.#eventEditView);
+    document.removeEventListener('keydown', this.#onEscKeydown);
+
+    this.#mode = Mode.VIEW;
+  }
+
+  #onEscKeydown = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#switchToViewMode();
+    }
+  };
 }

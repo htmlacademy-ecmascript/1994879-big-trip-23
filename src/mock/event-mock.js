@@ -1,5 +1,11 @@
 import { EVENT_TYPES } from '../const';
-import { getId, getRandomArrayElement, getRandomBoolean, getRandomInt, getDateWithRandomTime } from './utils';
+import {
+  getId,
+  getRandomArrayElement,
+  getRandomBoolean,
+  getRandomInt,
+  getDateWithRandomTime,
+} from './utils';
 import { getRandomDestination } from './destination-mock';
 import { getMockedOffers } from './offer-mock';
 
@@ -14,8 +20,11 @@ const createMockEvent = () => {
   const dateStart = getDateWithRandomTime();
   const dateEnd = getDateWithRandomTime(dateStart);
   const offersByType = mockedOffers.find((offer) => offer.type === type);
-  const offers = (offersByType.length > 0) ? Array.from({ length: getRandomInt(OFFERS_LIMIT) }, () => getRandomArrayElement(offersByType.offers)) : [];
-  const offerIds = (offers.length > 0) ? offers.map((offer) => offer.id) : [];
+  const offers =
+    offersByType.offers.length > 0
+      ? Array.from({ length: getRandomInt(OFFERS_LIMIT) }, () => getRandomArrayElement(offersByType.offers))
+      : [];
+  const offerIds = offers.length > 0 ? offers.map((offer) => offer.id) : [];
 
   return {
     id: getId(),
@@ -29,6 +38,7 @@ const createMockEvent = () => {
   };
 };
 
-const getMockedEvents = () => Array.from({ length: EVENTS_COUNT}, createMockEvent);
+const getMockedEvents = () =>
+  Array.from({ length: EVENTS_COUNT }, createMockEvent);
 
 export { EVENTS_COUNT, getMockedEvents };

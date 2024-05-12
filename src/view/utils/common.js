@@ -4,6 +4,6 @@ const firstLetterUpperCase = (word) => {
 };
 
 const isEmpty = (list) => list.length === 0;
-const calculateChecked = (isChecked) => isChecked ? 'checked' : '';
+const getIsCheckedAttr = (isChecked) => isChecked ? 'checked' : '';
 
-export { firstLetterUpperCase, isEmpty, calculateChecked };
+export { firstLetterUpperCase, isEmpty, getIsCheckedAttr };

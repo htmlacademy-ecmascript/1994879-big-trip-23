@@ -1,4 +1,4 @@
-import EventPresenter from './presenter/event-presenter';
+import TripPresenter from './presenter/trip-presenter';
 import HeaderPresenter from './presenter/header-presenter';
 import TripEventModel from './model/trip-event-model';
 
@@ -19,7 +19,7 @@ const start = () => {
       model: tripEventModel
     }
   );
-  const eventPresenter = new EventPresenter(
+  const tripPresenter = new TripPresenter(
     {
       container: eventsElement,
       model: tripEventModel
@@ -27,7 +27,7 @@ const start = () => {
   );
 
   headerPresenter.init();
-  eventPresenter.init();
+  tripPresenter.init();
 };
 
 start();
