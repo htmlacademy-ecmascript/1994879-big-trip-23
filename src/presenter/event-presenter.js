@@ -1,6 +1,6 @@
 import EventEditView from '../view/event-edit-view';
 import TripEventView from '../view/trip-event-view';
-import { render, replace, remove } from '../framework/render';
+import { replace, remove } from '../framework/render';
 
 const Mode = {
   VIEW: 'View',
@@ -51,6 +51,7 @@ export default class EventPresenter {
       tripEvent,
       offers,
       destinations,
+      container: this.#container,
       onEditClick: this.#onEditClick,
       onFavoriteClick: this.#onFavoriteClick,
     });
@@ -64,7 +65,6 @@ export default class EventPresenter {
     });
 
     if (prevTripEventView === null || prevEventEditView === null) {
-      render(this.#tripEventView, this.#container);
       return;
     }
 

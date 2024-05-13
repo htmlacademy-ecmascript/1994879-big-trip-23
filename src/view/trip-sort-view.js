@@ -1,4 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
+import { render } from '../framework/render';
 import { firstLetterUpperCase } from './utils/common';
 import { getIsCheckedAttr } from './utils/common';
 
@@ -19,13 +20,16 @@ export default class TripSortView extends AbstractView {
   #sortTypes = [];
   #currentSortType = '';
 
-  constructor({sortTypes, currentSortType}) {
+  constructor({sortTypes, currentSortType, container}) {
     super();
     this.#sortTypes = sortTypes;
     this.#currentSortType = currentSortType;
+    render(this, container);
   }
 
   get template() {
     return createSortingTemplate(this.#sortTypes, this.#currentSortType);
   }
+
+
 }

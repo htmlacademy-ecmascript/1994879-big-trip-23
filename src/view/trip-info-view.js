@@ -1,4 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
+import { render, RenderPosition } from '../framework/render';
 
 const createTripInfoTemplate = (tripEvents) => {
   const totalPrice = tripEvents.reduce((price, tripEvent) => price + tripEvent.price, 0);
@@ -20,9 +21,10 @@ const createTripInfoTemplate = (tripEvents) => {
 export default class TripInfoView extends AbstractView {
   #tripEvents = null;
 
-  constructor(tripEvents) {
+  constructor({ tripEvents, container }) {
     super();
     this.#tripEvents = tripEvents;
+    render(this, container, RenderPosition.AFTERBEGIN);
   }
 
   get template() {

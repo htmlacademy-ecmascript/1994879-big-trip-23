@@ -1,4 +1,3 @@
-import { render, RenderPosition } from '../framework/render';
 import TripFiltersView from '../view/trip-filters-view';
 import TripInfoView from '../view/trip-info-view';
 
@@ -14,15 +13,15 @@ export default class HeaderPresenter {
   }
 
   init() {
-    this.#renderSummary(this.#model.tripEvents);
-    this.#renderFilters(this.#model.filters);
+    this.#renderSummary(this.#model);
+    this.#renderFilters(this.#model);
   }
 
-  #renderSummary(tripEvents) {
-    render(new TripInfoView(tripEvents), this.#infoContainer, RenderPosition.AFTERBEGIN);
+  #renderSummary({ tripEvents }) {
+    new TripInfoView({ tripEvents, container: this.#infoContainer });
   }
 
-  #renderFilters(filters) {
-    render(new TripFiltersView({filters, currentFilter: filters[-1]}), this.#filterContainer);
+  #renderFilters({ filters }) {
+    new TripFiltersView({ filters, currentFilter: filters[-1], container: this.#filterContainer });
   }
 }

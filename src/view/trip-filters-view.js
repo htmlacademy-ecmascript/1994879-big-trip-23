@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
 import { firstLetterUpperCase, getIsCheckedAttr, getIsDisabledAttr } from './utils/common';
+import { render } from '../framework/render';
 
 const createFilterItemTemplate = (value, isChecked, isDisabled) => `
   <div class="trip-filters__filter">
@@ -21,10 +22,11 @@ export default class TripFiltersView extends AbstractView {
   #filters = [];
   #currentFilter = '';
 
-  constructor({filters, currentFilter}) {
+  constructor({filters, currentFilter, container}) {
     super();
     this.#filters = filters;
     this.#currentFilter = currentFilter;
+    render(this, container);
   }
 
   get template() {
