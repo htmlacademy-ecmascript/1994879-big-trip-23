@@ -29,6 +29,17 @@ export default class EventPresenter {
     this.#renderTripEvent(tripEvent);
   }
 
+  destroy() {
+    remove(this.#tripEventView);
+    remove(this.#eventEditView);
+  }
+
+  resetView() {
+    if (this.#mode !== Mode.VIEW) {
+      this.#switchToViewMode();
+    }
+  }
+
   #renderTripEvent(tripEvent) {
     const offers = this.#model.offers;
     const destinations = this.#model.destinations;
@@ -69,30 +80,6 @@ export default class EventPresenter {
     remove(prevEventEditView);
   }
 
-  destroy() {
-    remove(this.#tripEventView);
-    remove(this.#eventEditView);
-  }
-
-  resetView() {
-    if (this.#mode !== Mode.VIEW) {
-      this.#switchToViewMode();
-    }
-  }
-
-  #onEditClick = () => this.#switchToEditMode();
-  #onFormCancel = () => this.#switchToViewMode();
-
-  #onFormSubmit = (tripEvent) => {
-    this.#tripEventChangeHandler(tripEvent);
-    this.#switchToViewMode();
-  };
-
-  #onFavoriteClick = () => this.#tripEventChangeHandler({
-    ...this.#tripEvent,
-    isFavorite: !this.#tripEvent.isFavorite,
-  });
-
   #switchToEditMode() {
     replace(this.#eventEditView, this.#tripEventView);
     document.addEventListener('keydown', this.#onEscKeydown);
@@ -107,6 +94,19 @@ export default class EventPresenter {
 
     this.#mode = Mode.VIEW;
   }
+
+  #onEditClick = () => this.#switchToEditMode();
+  #onFormCancel = () => this.#switchToViewMode();
+
+  #onFormSubmit = (tripEvent) => {
+    this.#tripEventChangeHandler(tripEvent);
+    this.#switchToViewMode();
+  };
+
+  #onFavoriteClick = () => this.#tripEventChangeHandler({
+    ...this.#tripEvent,
+    isFavorite: !this.#tripEvent.isFavorite,
+  });
 
   #onEscKeydown = (evt) => {
     if (evt.key === 'Escape') {

@@ -1,5 +1,5 @@
 import { getMockedEvents } from '../mock/event-mock';
-import { getMockedDestionations } from '../mock/destination-mock';
+import { getMockedDestinations } from '../mock/destination-mock';
 import { getMockedOffers } from '../mock/offer-mock';
 import { Filters, SORT_TYPES } from '../const';
 
@@ -9,14 +9,6 @@ export default class TripEventModel {
   #tripEvents = [];
   #filters = [];
   #sortTypes = [];
-
-  init() {
-    this.destinations = getMockedDestionations();
-    this.offers = getMockedOffers();
-    this.tripEvents = getMockedEvents();
-    this.#filters = Object.values(Filters);
-    this.#sortTypes = SORT_TYPES;
-  }
 
   get tripEvents() {
     return this.#tripEvents;
@@ -48,5 +40,13 @@ export default class TripEventModel {
 
   get sortTypes() {
     return this.#sortTypes;
+  }
+
+  init() {
+    this.destinations = getMockedDestinations();
+    this.offers = getMockedOffers();
+    this.tripEvents = getMockedEvents();
+    this.#filters = Object.values(Filters);
+    this.#sortTypes = SORT_TYPES;
   }
 }
