@@ -46,7 +46,8 @@ const TripEmptyMessages = {
 };
 
 const DateFormats = {
-  DATE_MONTH: 'MMM D',
+  DAY_MONTH: 'D MMM',
+  MONTH_DAY: 'MMM D',
   DATE: 'YYYY-MM-DD',
   TIME: 'HH:mm',
   DATE_TIME_SYSTEM: 'YYYY-MM-DDTHH:mm',

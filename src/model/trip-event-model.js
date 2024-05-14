@@ -67,6 +67,22 @@ export default class TripEventModel {
     this.#currentSort = sortType;
   }
 
+  get tripInfo() {
+    const trip = this.#getSortedTripEvents(this.#defaultSortType);
+    const first = trip[trip.length - 1];
+    const last = trip[0];
+    const middle = trip.slice(1, -1);
+    const middleDestination = middle.length === 1 ? this.#getDestinationName(middle[0].destination) : '...';
+    return {
+      start: this.#getDestinationName(first.destination),
+      middle: middleDestination,
+      end:  this.#getDestinationName(last.destination),
+      dateFrom: first.dateFrom,
+      dateTo: last.dateTo,
+      cost: trip.reduce((price, tripEvent) => price + tripEvent.price, 0),
+    };
+  }
+
   init() {
     this.destinations = getMockedDestinations();
     this.offers = getMockedOffers();
@@ -88,4 +104,6 @@ export default class TripEventModel {
         return tripEvents;
     }
   };
+
+  #getDestinationName = (id) => this.#destinations.find((destination) => destination.id === id).name;
 }

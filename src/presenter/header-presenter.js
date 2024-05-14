@@ -18,8 +18,8 @@ export default class HeaderPresenter {
     this.#renderFilters(this.#model);
   }
 
-  #renderSummary({ tripEvents }) {
-    new TripInfoView({ tripEvents, container: this.#infoContainer });
+  #renderSummary({ tripInfo }) {
+    new TripInfoView({ tripInfo, container: this.#infoContainer });
   }
 
   #renderFilters({ filters, currentFilter }) {
