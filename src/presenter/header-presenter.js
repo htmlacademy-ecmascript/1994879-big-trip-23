@@ -37,5 +37,5 @@ export default class HeaderPresenter {
     }
 
     this.#model.currentFilter = newFilter;
-  }
+  };
 }

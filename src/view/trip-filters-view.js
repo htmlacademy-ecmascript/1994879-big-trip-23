@@ -44,5 +44,5 @@ export default class TripFiltersView extends AbstractView {
   #onFilterChange = (evt) => {
     evt.preventDefault();
     this.#filterChangeHandler(evt.target.value.replace('filter-', ''));
-  }
+  };
 }
