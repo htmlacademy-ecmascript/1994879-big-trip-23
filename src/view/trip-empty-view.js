@@ -7,7 +7,7 @@ const createEmptyTemplate = (filter) => `<p class="trip-events__msg">${TripEmpty
 export default class TripEmptyView extends AbstractView {
   #filter = '';
 
-  constructor({ filter }) {
+  constructor({ filter, container }) {
     super();
     this.#filter = filter;
     render(this, container);

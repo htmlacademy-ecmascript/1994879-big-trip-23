@@ -21,7 +21,7 @@ export default class HeaderPresenter {
     new TripInfoView({ tripEvents, container: this.#infoContainer });
   }
 
-  #renderFilters({ filters }) {
-    new TripFiltersView({ filters, currentFilter: filters[-1], container: this.#filterContainer });
+  #renderFilters({ filters, currentFilter }) {
+    new TripFiltersView({ filters, currentFilter, container: this.#filterContainer });
   }
 }

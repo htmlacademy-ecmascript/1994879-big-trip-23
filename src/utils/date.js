@@ -1,12 +1,14 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
 
-import { DateFormats } from '../../const';
+import { DateFormats } from '../const';
 
 dayjs.extend(duration);
 
-const getDuration = (dateFrom, dateTo) => {
-  const dateDelta = dayjs.duration(dayjs(dateTo).diff(dateFrom));
+const getDateDiff = ({ dateFrom, dateTo }) => dayjs(dateTo).diff(dateFrom);
+
+const displayDuration = (dateFrom, dateTo) => {
+  const dateDelta = dayjs.duration(getDateDiff({ dateFrom, dateTo }));
   if (dateDelta.days()) {
     return dateDelta.format(DateFormats.DAY);
   }
@@ -23,4 +25,4 @@ const displayDate = (date) => date ? dayjs(date).format(DateFormats.DATE) : '';
 const displayTime = (time) => time ? dayjs(time).format(DateFormats.TIME) : '';
 const displayDateTime = (date, dateFormat = DateFormats.DATE_TIME_SYSTEM) => date ? dayjs(date).format(dateFormat) : '';
 
-export { getDuration, displayDate, displayDateMonth, displayTime, displayDateTime };
+export { getDateDiff, displayDuration, displayDate, displayDateMonth, displayTime, displayDateTime };

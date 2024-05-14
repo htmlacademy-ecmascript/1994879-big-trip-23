@@ -22,7 +22,14 @@ const EVENT_TYPES = [
   'sightseeing',
   'restaurant',
 ];
-const SORT_TYPES = ['day', 'event', 'time', 'price', 'offers'];
+
+const SortTypes = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers'
+};
 
 const Filters = {
   EVERYTHING: 'everything',
@@ -52,7 +59,7 @@ const DateFormats = {
 export {
   BLANK_TRIP_EVENT,
   EVENT_TYPES,
-  SORT_TYPES,
+  SortTypes,
   Filters,
   TripEmptyMessages,
   DateFormats

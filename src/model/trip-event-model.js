@@ -1,7 +1,8 @@
 import { getMockedEvents } from '../mock/event-mock';
 import { getMockedDestinations } from '../mock/destination-mock';
 import { getMockedOffers } from '../mock/offer-mock';
-import { Filters, SORT_TYPES } from '../const';
+import { Filters, SortTypes } from '../const';
+import { sortByPrice, sortByTime, sortByDay } from '../utils/common';
 
 export default class TripEventModel {
   #destinations = [];
@@ -9,9 +10,13 @@ export default class TripEventModel {
   #tripEvents = [];
   #filters = [];
   #sortTypes = [];
+  #defaultFilter = Filters.EVERYTHING;
+  #defaultSortType = SortTypes.DAY
+  #currentFilter = this.#defaultFilter;
+  #currentSort = this.#defaultSortType;
 
   get tripEvents() {
-    return this.#tripEvents;
+    return this.#getSortedTripEvents(this.#currentSort);
   }
 
   set tripEvents(tripEvents) {
@@ -38,8 +43,28 @@ export default class TripEventModel {
     return this.#filters;
   }
 
+  get currentFilter() {
+    return this.#currentFilter;
+  }
+
+  set currentFilter(filter) {
+    this.#currentFilter = filter;
+  }
+
   get sortTypes() {
-    return this.#sortTypes;
+    const disabledSortTypes = [SortTypes.EVENT, SortTypes.OFFERS];
+    return this.#sortTypes.map((type) => ({
+      type,
+      disabled: disabledSortTypes.includes(type),
+    }));
+  }
+
+  get currentSort() {
+    return this.#currentSort;
+  }
+
+  set currentSort(sortType) {
+    this.#currentSort = sortType;
   }
 
   init() {
@@ -47,6 +72,20 @@ export default class TripEventModel {
     this.offers = getMockedOffers();
     this.tripEvents = getMockedEvents();
     this.#filters = Object.values(Filters);
-    this.#sortTypes = SORT_TYPES;
+    this.#sortTypes = Object.values(SortTypes);
   }
+
+  #getSortedTripEvents = (sortType) => {
+    const tripEvents = [...this.#tripEvents];
+    switch (sortType) {
+      case SortTypes.DAY:
+        return tripEvents.sort(sortByDay);
+      case SortTypes.TIME:
+        return tripEvents.sort(sortByTime);
+      case SortTypes.PRICE:
+        return tripEvents.sort(sortByPrice);
+      default:
+        return tripEvents;
+    }
+  };
 }

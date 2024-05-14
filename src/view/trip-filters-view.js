@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import { firstLetterUpperCase, getIsCheckedAttr, getIsDisabledAttr } from './utils/common';
+import { firstLetterUpperCase, getIsCheckedAttr, getIsDisabledAttr } from '../utils/common';
 import { render } from '../framework/render';
 
 const createFilterItemTemplate = (value, isChecked, isDisabled) => `

@@ -1,15 +1,17 @@
-import { isEmpty } from '../view/utils/common';
+import { isEmpty } from '../utils/common';
 import TripSortView from '../view/trip-sort-view';
 import TripEventsView from '../view/trip-events-view';
 import TripEmptyView from '../view/trip-empty-view';
 import EventPresenter from './event-presenter';
-import { updateItem } from './utils';
+import { updateItem } from '../utils/common';
 
 export default class TripPresenter {
   #model = null;
   #container = null;
   #tripEvents = [];
   #tripEventsView = null;
+  #tripSortView = null;
+  #tripEmptyView = null;
   #eventPresenters = new Map();
 
   constructor({ container, model }) {
@@ -18,17 +20,26 @@ export default class TripPresenter {
   }
 
   init() {
-    this.#tripEvents = [...this.#model.tripEvents];
+    this.#tripEvents = this.#model.tripEvents;
     this.#clearTripEvents();
     this.#renderTripEvents();
   }
 
   #renderEmptyView() {
-    new TripEmptyView({ filter: this.#model.filters[0], container: this.#container });
+    this.#tripEmptyView = new TripEmptyView({ filter: this.#model.currentFilter, container: this.#container });
   }
 
-  #renderSortView() {
-    new TripSortView({ sortTypes: this.#model.sortTypes, currentSortType: this.#model.sortTypes[0], container: this.#container });
+  #renderSortView({ sortTypes, currentSort }) {
+    if (this.#tripSortView) {
+      return;
+    }
+
+    this.#tripSortView = new TripSortView({
+      sortTypes,
+      currentSort,
+      container: this.#container,
+      onSortTypeChange: this.#onSortTypeChange,
+    });
   }
 
   #renderTripEvents() {
@@ -37,7 +48,7 @@ export default class TripPresenter {
       return;
     }
 
-    this.#renderSortView();
+    this.#renderSortView(this.#model);
     this.#tripEventsView = new TripEventsView({ container: this.#container });
 
     this.#tripEvents.forEach((tripEvent) => {
@@ -63,4 +74,13 @@ export default class TripPresenter {
   };
 
   #onTripEventModeChange = () => this.#eventPresenters.forEach((presenter) => presenter.resetView());
+
+  #onSortTypeChange = (newSort) => {
+    if (this.#model.currentSort === newSort) {
+      return;
+    }
+
+    this.#model.currentSort = newSort;
+    this.init();
+  };
 }
