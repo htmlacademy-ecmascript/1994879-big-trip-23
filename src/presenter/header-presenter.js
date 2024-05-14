@@ -5,6 +5,7 @@ export default class HeaderPresenter {
   #model = null;
   #filterContainer = null;
   #infoContainer = null;
+  #tripFiltersView = null;
 
   constructor ({ container, model }) {
     this.#filterContainer = container.filter;
@@ -22,6 +23,19 @@ export default class HeaderPresenter {
   }
 
   #renderFilters({ filters, currentFilter }) {
-    new TripFiltersView({ filters, currentFilter, container: this.#filterContainer });
+    this.#tripFiltersView = new TripFiltersView({
+      filters,
+      currentFilter,
+      container: this.#filterContainer,
+      onFilterChange: this.#onFilterChange
+    });
+  }
+
+  #onFilterChange = (newFilter) => {
+    if (this.#model.currentFilter === newFilter) {
+      return;
+    }
+
+    this.#model.currentFilter = newFilter;
   }
 }

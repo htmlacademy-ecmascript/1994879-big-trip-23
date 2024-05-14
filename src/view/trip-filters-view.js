@@ -21,15 +21,28 @@ const createFiltersTemplate = (filters, currentFilter) => `
 export default class TripFiltersView extends AbstractView {
   #filters = [];
   #currentFilter = '';
+  #filterChangeHandler = null;
 
-  constructor({filters, currentFilter, container}) {
+  constructor({filters, currentFilter, container, onFilterChange}) {
     super();
     this.#filters = filters;
     this.#currentFilter = currentFilter;
+    this.#filterChangeHandler = onFilterChange;
+    this.element.addEventListener('change', this.#onFilterChange);
     render(this, container);
   }
 
   get template() {
     return createFiltersTemplate(this.#filters, this.#currentFilter);
+  }
+
+  removeElement() {
+    this.element.removeEventListener('change', this.#onFilterChange);
+    super.removeElement();
+  }
+
+  #onFilterChange = (evt) => {
+    evt.preventDefault();
+    this.#filterChangeHandler(evt.target.value.replace('filter-', ''));
   }
 }

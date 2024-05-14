@@ -37,8 +37,8 @@ export default class TripSortView extends AbstractView {
   }
 
   removeElement() {
-    super.removeElement();
     this.element.removeEventListener('change', this.#onSortTypeChange);
+    super.removeElement();
   }
 
   #onSortTypeChange = (evt) => {
