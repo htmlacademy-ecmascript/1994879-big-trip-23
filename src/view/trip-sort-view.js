@@ -44,6 +44,6 @@ export default class TripSortView extends AbstractView {
   #onSortTypeChange = (evt) => {
     evt.preventDefault();
     this.#sortTypeChangeHandler(evt.target.value.replace('sort-', ''));
-  }
+  };
 
 }

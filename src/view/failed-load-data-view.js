@@ -1,3 +1,4 @@
+import { render } from '../framework/render';
 import AbstractView from '../framework/view/abstract-view';
 
 const createFailedLoadTemplate = () => '<p class="trip-events__msg">Failed to load latest route information</p>';

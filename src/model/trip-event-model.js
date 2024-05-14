@@ -11,7 +11,7 @@ export default class TripEventModel {
   #filters = [];
   #sortTypes = [];
   #defaultFilter = Filters.EVERYTHING;
-  #defaultSortType = SortTypes.DAY
+  #defaultSortType = SortTypes.DAY;
   #currentFilter = this.#defaultFilter;
   #currentSort = this.#defaultSortType;
 
