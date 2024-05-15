@@ -3,6 +3,7 @@ import { getMockedDestinations } from '../mock/destination-mock';
 import { getMockedOffers } from '../mock/offer-mock';
 import { Filters, SortTypes } from '../const';
 import { sortByPrice, sortByTime, sortByDay } from '../utils/common';
+import dayjs from 'dayjs';
 
 export default class TripEventModel {
   #destinations = [];
@@ -16,7 +17,8 @@ export default class TripEventModel {
   #currentSort = this.#defaultSortType;
 
   get tripEvents() {
-    return this.#getSortedTripEvents(this.#currentSort);
+    const filteredTripEvents = this.#getFilteredTripEvents(this.#tripEvents, this.#currentFilter);
+    return this.#getSortedTripEvents(filteredTripEvents, this.#currentSort);
   }
 
   set tripEvents(tripEvents) {
@@ -68,7 +70,7 @@ export default class TripEventModel {
   }
 
   get tripInfo() {
-    const trip = this.#getSortedTripEvents(this.#defaultSortType);
+    const trip = this.#getSortedTripEvents(this.#tripEvents, this.#defaultSortType);
     const first = trip[trip.length - 1];
     const last = trip[0];
     const middle = trip.slice(1, -1);
@@ -91,8 +93,7 @@ export default class TripEventModel {
     this.#sortTypes = Object.values(SortTypes);
   }
 
-  #getSortedTripEvents = (sortType) => {
-    const tripEvents = [...this.#tripEvents];
+  #getSortedTripEvents = (tripEvents, sortType) => {
     switch (sortType) {
       case SortTypes.DAY:
         return tripEvents.sort(sortByDay);
@@ -101,7 +102,23 @@ export default class TripEventModel {
       case SortTypes.PRICE:
         return tripEvents.sort(sortByPrice);
       default:
-        return tripEvents;
+        return new Error(`Invalid sort type: ${sortType}`);
+    }
+  };
+
+  #getFilteredTripEvents = (tripEvents, filter) => {
+    const currentDate = dayjs();
+    switch (filter) {
+      case Filters.EVERYTHING:
+        return [...tripEvents];
+      case Filters.FUTURE:
+        return tripEvents.filter((tripEvent) => tripEvent.dateFrom > currentDate);
+      case Filters.PRESENT:
+        return tripEvents.filter((tripEvent) => tripEvent.dateFrom >= currentDate && tripEvent.dateTo <= currentDate);
+      case Filters.PAST:
+        return tripEvents.filter((tripEvent) => tripEvent.dateTo < currentDate);
+      default:
+        throw new Error(`Invalid filter: ${filter}`);
     }
   };
 

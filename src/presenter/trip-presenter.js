@@ -66,6 +66,9 @@ export default class TripPresenter {
   #clearTripEvents() {
     this.#eventPresenters.forEach((eventPresenter) => eventPresenter.destroy());
     this.#eventPresenters.clear();
+    if (this.#tripEmptyView) {
+      this.#tripEmptyView.destroy();
+    }
   }
 
   #onTripEventChange = (updatedTripEvent) => {
