@@ -13,6 +13,6 @@ const updateItem = (items, updatedItem) => items.map((item) => item.id === updat
 
 const sortByPrice = (eventA, eventB) => eventB.price - eventA.price;
 const sortByTime = (eventA, eventB) => getDateDiff(eventB) - getDateDiff(eventA);
-const sortByDay = (eventA, eventB) => eventB.dateFrom - eventA.dateFrom;
+const sortByDay = (eventA, eventB) => eventA.dateFrom - eventB.dateFrom;
 
 export { firstLetterUpperCase, isEmpty, getIsCheckedAttr, getIsDisabledAttr, updateItem, sortByPrice, sortByTime, sortByDay };
