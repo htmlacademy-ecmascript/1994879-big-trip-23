@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
-import { displayDate, displayDateMonth, displayTime, displayDateTime, getDuration } from './utils/date';
-import { isEmpty } from './utils/common';
+import { displayDate, displayDateMonth, displayTime, displayDateTime, displayDuration } from '../utils/date';
+import { isEmpty } from '../utils/common';
+import { render } from '../framework/render';
 
 const createEventScheduleTemplate = (dateFrom, dateTo) => `
   <div class="event__schedule">
@@ -9,7 +10,7 @@ const createEventScheduleTemplate = (dateFrom, dateTo) => `
     &mdash;
     <time class="event__end-time" datetime="${displayDateTime(dateTo)}">${displayTime(dateTo)}</time>
   </p>
-  <p class="event__duration">${getDuration(dateFrom, dateTo)}</p>
+  <p class="event__duration">${displayDuration(dateFrom, dateTo)}</p>
 </div>
 `;
 
@@ -72,7 +73,7 @@ export default class TripEventView extends AbstractView {
   #rollupButtonElement = null;
   #favoriteButtonElement = null;
 
-  constructor({tripEvent, offers, destinations, onEditClick, onFavoriteClick}) {
+  constructor({tripEvent, offers, destinations, container, onEditClick, onFavoriteClick}) {
     super();
     this.#tripEvent = tripEvent;
     this.#offers = offers;
@@ -84,6 +85,7 @@ export default class TripEventView extends AbstractView {
 
     this.#rollupButtonElement.addEventListener('click', this.#onClick);
     this.#favoriteButtonElement.addEventListener('click', this.#onFavoriteClick);
+    render(this, container);
   }
 
   get template() {

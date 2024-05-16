@@ -1,7 +1,7 @@
 import { BLANK_TRIP_EVENT, EVENT_TYPES, DateFormats } from '../const';
 import AbstractView from '../framework/view/abstract-view';
-import { displayDateTime } from './utils/date';
-import { firstLetterUpperCase, getIsCheckedAttr } from './utils/common';
+import { displayDateTime } from '../utils/date';
+import { firstLetterUpperCase, getIsCheckedAttr } from '../utils/common';
 
 const createEventTypeItemTemplate = (id, type, isChecked) => `
   <div class="event__type-item">

@@ -1,31 +1,33 @@
 import AbstractView from '../framework/view/abstract-view';
+import { render, RenderPosition } from '../framework/render';
+import { displayDateTime } from '../utils/date';
+import { DateFormats } from '../const';
 
-const createTripInfoTemplate = (tripEvents) => {
-  const totalPrice = tripEvents.reduce((price, tripEvent) => price + tripEvent.price, 0);
-
-  return `
+const createTripInfoTemplate = ({ start, middle, end, dateFrom, dateTo, cost }) => `
     <section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
-        <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Geneva</h1>
+        <h1 class="trip-info__title">${start} &mdash; ${middle} &mdash; ${end}</h1>
 
-        <p class="trip-info__dates">18&nbsp;&mdash;&nbsp;20 Mar</p>
+        <p class="trip-info__dates">${displayDateTime(dateFrom, DateFormats.DAY_MONTH)}
+          &nbsp;&mdash;&nbsp;${displayDateTime(dateTo, DateFormats.DAY_MONTH)}</p>
       </div>
 
       <p class="trip-info__cost">
-        Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalPrice}</span>
+        Total: &euro;&nbsp;<span class="trip-info__cost-value">${cost}</span>
       </p>
-    </section>`;
-};
+    </section>
+  `;
 
 export default class TripInfoView extends AbstractView {
-  #tripEvents = null;
+  #tripInfo = null;
 
-  constructor(tripEvents) {
+  constructor({ tripInfo, container }) {
     super();
-    this.#tripEvents = tripEvents;
+    this.#tripInfo = tripInfo;
+    render(this, container, RenderPosition.AFTERBEGIN);
   }
 
   get template() {
-    return createTripInfoTemplate(this.#tripEvents);
+    return createTripInfoTemplate(this.#tripInfo);
   }
 }

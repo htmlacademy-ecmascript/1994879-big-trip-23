@@ -22,7 +22,14 @@ const EVENT_TYPES = [
   'sightseeing',
   'restaurant',
 ];
-const SORT_TYPES = ['day', 'event', 'time', 'price', 'offers'];
+
+const SortTypes = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers'
+};
 
 const Filters = {
   EVERYTHING: 'everything',
@@ -39,7 +46,8 @@ const TripEmptyMessages = {
 };
 
 const DateFormats = {
-  DATE_MONTH: 'MMM D',
+  DAY_MONTH: 'D MMM',
+  MONTH_DAY: 'MMM D',
   DATE: 'YYYY-MM-DD',
   TIME: 'HH:mm',
   DATE_TIME_SYSTEM: 'YYYY-MM-DDTHH:mm',
@@ -52,7 +60,7 @@ const DateFormats = {
 export {
   BLANK_TRIP_EVENT,
   EVENT_TYPES,
-  SORT_TYPES,
+  SortTypes,
   Filters,
   TripEmptyMessages,
   DateFormats

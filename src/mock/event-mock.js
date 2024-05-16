@@ -14,10 +14,10 @@ const OFFERS_LIMIT = 3;
 
 const mockedOffers = getMockedOffers();
 
-const createMockEvent = () => {
+const createMockEvent = (isOdd = false) => {
   const { id: destinationId } = getRandomDestination();
   const type = getRandomArrayElement(EVENT_TYPES);
-  const dateStart = getDateWithRandomTime();
+  const dateStart = getDateWithRandomTime(isOdd ? new Date('2024-05-14') : undefined);
   const dateEnd = getDateWithRandomTime(dateStart);
   const offersByType = mockedOffers.find((offer) => offer.type === type);
   const offers =
@@ -39,6 +39,6 @@ const createMockEvent = () => {
 };
 
 const getMockedEvents = () =>
-  Array.from({ length: EVENTS_COUNT }, createMockEvent);
+  Array.from({ length: EVENTS_COUNT }, (_, i) => createMockEvent(i % 2 === 0));
 
 export { EVENTS_COUNT, getMockedEvents };

@@ -1,4 +1,3 @@
-import { render, RenderPosition } from '../framework/render';
 import TripFiltersView from '../view/trip-filters-view';
 import TripInfoView from '../view/trip-info-view';
 
@@ -6,6 +5,7 @@ export default class HeaderPresenter {
   #model = null;
   #filterContainer = null;
   #infoContainer = null;
+  #tripFiltersView = null;
 
   constructor ({ container, model }) {
     this.#filterContainer = container.filter;
@@ -14,15 +14,28 @@ export default class HeaderPresenter {
   }
 
   init() {
-    this.#renderSummary(this.#model.tripEvents);
-    this.#renderFilters(this.#model.filters);
+    this.#renderSummary(this.#model);
+    this.#renderFilters(this.#model);
   }
 
-  #renderSummary(tripEvents) {
-    render(new TripInfoView(tripEvents), this.#infoContainer, RenderPosition.AFTERBEGIN);
+  #renderSummary({ tripInfo }) {
+    new TripInfoView({ tripInfo, container: this.#infoContainer });
   }
 
-  #renderFilters(filters) {
-    render(new TripFiltersView({filters, currentFilter: filters[-1]}), this.#filterContainer);
+  #renderFilters({ filters, currentFilter }) {
+    this.#tripFiltersView = new TripFiltersView({
+      filters,
+      currentFilter,
+      container: this.#filterContainer,
+      onFilterChange: this.#onFilterChange
+    });
   }
+
+  #onFilterChange = (newFilter) => {
+    if (this.#model.currentFilter === newFilter) {
+      return;
+    }
+
+    this.#model.currentFilter = newFilter;
+  };
 }
