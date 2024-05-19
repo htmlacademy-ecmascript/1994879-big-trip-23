@@ -1,4 +1,6 @@
 const DEFAULT_EVENT_TYPE = 'Flight';
+const DEFAULT_FILTER = 'everything';
+const DEFAULT_SORT_TYPE = 'day';
 
 const BLANK_TRIP_EVENT = {
   id: 0,
@@ -60,6 +62,8 @@ const DateFormats = {
 export {
   BLANK_TRIP_EVENT,
   EVENT_TYPES,
+  DEFAULT_FILTER,
+  DEFAULT_SORT_TYPE,
   SortTypes,
   Filters,
   TripEmptyMessages,

@@ -1,7 +1,7 @@
 import { getMockedEvents } from '../mock/event-mock';
 import { getMockedDestinations } from '../mock/destination-mock';
 import { getMockedOffers } from '../mock/offer-mock';
-import { Filters, SortTypes } from '../const';
+import { Filters, SortTypes, DEFAULT_FILTER, DEFAULT_SORT_TYPE } from '../const';
 import { sortByPrice, sortByTime, sortByDay } from '../utils/common';
 import dayjs from 'dayjs';
 
@@ -11,10 +11,8 @@ export default class TripEventModel {
   #tripEvents = [];
   #filters = [];
   #sortTypes = [];
-  #defaultFilter = Filters.EVERYTHING;
-  #defaultSortType = SortTypes.DAY;
-  #currentFilter = this.#defaultFilter;
-  #currentSort = this.#defaultSortType;
+  #currentFilter = DEFAULT_FILTER;
+  #currentSort = DEFAULT_SORT_TYPE;
 
   get tripEvents() {
     const filteredTripEvents = this.#getFilteredTripEvents(this.#tripEvents, this.#currentFilter);
@@ -70,7 +68,7 @@ export default class TripEventModel {
   }
 
   get tripInfo() {
-    const trip = this.#getSortedTripEvents(this.#tripEvents, this.#defaultSortType);
+    const trip = this.#getSortedTripEvents(this.#tripEvents, DEFAULT_SORT_TYPE);
     const first = trip[trip.length - 1];
     const last = trip[0];
     const middle = trip.slice(1, -1);

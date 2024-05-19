@@ -110,7 +110,7 @@ export default class EventPresenter {
 
   #onEscKeydown = (evt) => {
     if (evt.key === 'Escape') {
-      evt.preventDefault();
+      evt.stopPropagation();
       this.#switchToViewMode();
     }
   };
