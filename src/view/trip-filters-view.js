@@ -2,6 +2,8 @@ import AbstractView from '../framework/view/abstract-view';
 import { firstLetterUpperCase, getIsCheckedAttr, getIsDisabledAttr } from '../utils/common';
 import { render } from '../framework/render';
 
+const FILTER_PREFIX = 'filter-';
+
 const createFilterItemTemplate = (value, isChecked, isDisabled) => `
   <div class="trip-filters__filter">
     <input id="filter-${value}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter"
@@ -43,6 +45,6 @@ export default class TripFiltersView extends AbstractView {
 
   #onFilterChange = (evt) => {
     evt.preventDefault();
-    this.#filterChangeHandler(evt.target.value.replace('filter-', ''));
+    this.#filterChangeHandler(evt.target.value.replace(FILTER_PREFIX, ''));
   };
 }

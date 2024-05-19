@@ -8,7 +8,7 @@ const BLANK_TRIP_EVENT = {
   dateFrom: new Date(),
   dateTo: null,
   destination: null,
-  price: 0,
+  basePrice: 0,
   offers: [],
   isFavorite: false,
 };

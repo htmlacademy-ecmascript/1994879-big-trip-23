@@ -1,9 +1,8 @@
-import { getMockedEvents } from '../mock/event-mock';
-import { getMockedDestinations } from '../mock/destination-mock';
-import { getMockedOffers } from '../mock/offer-mock';
 import { Filters, SortTypes, DEFAULT_FILTER, DEFAULT_SORT_TYPE } from '../const';
+import { BASE_URL, AUTHORIZATION } from '../service/const';
 import { sortByPrice, sortByTime, sortByDay } from '../utils/common';
 import dayjs from 'dayjs';
+import TripApiService from '../service/trip-api-service';
 
 export default class TripEventModel {
   #destinations = [];
@@ -13,6 +12,7 @@ export default class TripEventModel {
   #sortTypes = [];
   #currentFilter = DEFAULT_FILTER;
   #currentSort = DEFAULT_SORT_TYPE;
+  #tripApiService = new TripApiService(BASE_URL, AUTHORIZATION);
 
   get tripEvents() {
     const filteredTripEvents = this.#getFilteredTripEvents(this.#tripEvents, this.#currentFilter);
@@ -79,14 +79,14 @@ export default class TripEventModel {
       end:  this.#getDestinationName(last.destination),
       dateFrom: first.dateFrom,
       dateTo: last.dateTo,
-      cost: trip.reduce((price, tripEvent) => price + tripEvent.price, 0),
+      cost: trip.reduce((price, tripEvent) => price + tripEvent.basePrice, 0),
     };
   }
 
-  init() {
-    this.destinations = getMockedDestinations();
-    this.offers = getMockedOffers();
-    this.tripEvents = getMockedEvents();
+  async init() {
+    this.destinations = await this.#tripApiService.getDestinations();
+    this.offers = await this.#tripApiService.getOffers();
+    this.tripEvents = (await this.#tripApiService.getPoints()).map(TripApiService.adaptToClient);
     this.#filters = Object.values(Filters);
     this.#sortTypes = Object.values(SortTypes);
   }

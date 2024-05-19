@@ -20,13 +20,13 @@ const createEventTimePeriodTemplate = (id, dateFrom, dateTo) => `
   </div>
 `;
 
-const createOfferItemTemplate = ({id, type, title, price, isSelected}) => `
+const createOfferItemTemplate = ({id, type, title, basePrice, isSelected}) => `
   <div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox" name="event-offer-${type}" ${isSelected ? 'checked' : ''}>
     <label class="event__offer-label" for="event-offer-${type}-${id}">
       <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
-      <span class="event__offer-price">${price}</span>
+      <span class="event__offer-price">${basePrice}</span>
     </label>
   </div>
 `;
@@ -68,7 +68,7 @@ const createDestinationTemplate = ({description, pictures}) => `
 `;
 
 const createEventEditTemplate = (tripEvent, offers, destinations) => {
-  const {id, type, dateFrom, dateTo, price} = tripEvent;
+  const {id, type, dateFrom, dateTo, basePrice} = tripEvent;
   const tripDestination = destinations.find((destination) => destination.id === tripEvent.destination);
   const {offers: typedOffers} = offers.find((offer) => offer.type === type);
   const tripOffers = typedOffers.map((offer) => ({
@@ -111,7 +111,7 @@ const createEventEditTemplate = (tripEvent, offers, destinations) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
+        <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>

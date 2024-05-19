@@ -3,6 +3,8 @@ import { render } from '../framework/render';
 import { firstLetterUpperCase } from '../utils/common';
 import { getIsCheckedAttr, getIsDisabledAttr } from '../utils/common';
 
+const SORT_PREFIX = 'sort-';
+
 const createSortItemTemplate = (type, isChecked, isDisabled) => `
   <div class="trip-sort__item  trip-sort__item--${type}">
     <input id="sort-${type}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort"
@@ -43,7 +45,7 @@ export default class TripSortView extends AbstractView {
 
   #onSortTypeChange = (evt) => {
     evt.preventDefault();
-    this.#sortTypeChangeHandler(evt.target.value.replace('sort-', ''));
+    this.#sortTypeChangeHandler(evt.target.value.replace(SORT_PREFIX, ''));
   };
 
 }
