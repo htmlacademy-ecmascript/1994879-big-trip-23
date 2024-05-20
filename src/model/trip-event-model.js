@@ -1,7 +1,6 @@
 import { Filters, SortTypes, DEFAULT_FILTER, DEFAULT_SORT_TYPE } from '../const';
 import { BASE_URL, AUTHORIZATION } from '../service/const';
 import { sortByPrice, sortByTime, sortByDay } from '../utils/common';
-import dayjs from 'dayjs';
 import TripApiService from '../service/trip-api-service';
 
 export default class TripEventModel {
@@ -105,7 +104,7 @@ export default class TripEventModel {
   };
 
   #getFilteredTripEvents = (tripEvents, filter) => {
-    const currentDate = dayjs();
+    const currentDate = new Date();
     switch (filter) {
       case Filters.EVERYTHING:
         return [...tripEvents];

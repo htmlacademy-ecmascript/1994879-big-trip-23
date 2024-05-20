@@ -1,4 +1,4 @@
-const camelToSnakeCase = (str) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`).replace(/^_/, '');
+const camelToSnakeCase = (str) => str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`).replace(/^_/, '');
 const snakeToCamelCase = (str) => str.replace(/(_[a-z])/g, (_, group) => group.toUpperCase().replace('_', ''));
 
 const toSnakeCaseKeys = (obj) => {

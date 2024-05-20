@@ -36,6 +36,7 @@ export default class EventPresenter {
 
   resetView() {
     if (this.#mode !== Mode.VIEW) {
+      this.#eventEditView.reset(this.#tripEvent);
       this.#switchToViewMode();
     }
   }
@@ -73,6 +74,7 @@ export default class EventPresenter {
     }
 
     if (this.#mode === Mode.VIEW) {
+      this.#eventEditView.reset(tripEvent);
       replace(this.#tripEventView, prevTripEventView);
     }
 

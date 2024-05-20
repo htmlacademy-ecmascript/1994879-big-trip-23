@@ -59,6 +59,14 @@ const DateFormats = {
   MINUTES: 'mm[m]',
 };
 
+const ButtonTypes = {
+  SAVE: 'Save',
+  SAVING: 'Saving',
+  DELETE: 'Delete',
+  DELETING: 'Deleting',
+  CANCEL: 'Cancel',
+};
+
 export {
   BLANK_TRIP_EVENT,
   EVENT_TYPES,
@@ -67,5 +75,6 @@ export {
   SortTypes,
   Filters,
   TripEmptyMessages,
-  DateFormats
+  DateFormats,
+  ButtonTypes
 };
