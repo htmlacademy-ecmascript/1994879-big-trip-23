@@ -162,13 +162,6 @@ export default class EventEditView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group').addEventListener('change', this.#onTypeChange);
     this.element.querySelector('#event-destination-1').addEventListener('change', this.#onDestinationChange);
     this.element.querySelector('#event-price-1').addEventListener('change', this.#onPriceChange);
-
-
-    // const offersGroup = this.element.querySelector('.event__available-offers');
-    // if (offersGroup) {
-    //   offersGroup.addEventListener('change', this.#onOfferClick);
-    // }
-
   }
 
   reset(tripEvent) {
