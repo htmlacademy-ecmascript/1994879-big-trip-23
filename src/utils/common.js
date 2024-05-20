@@ -16,7 +16,7 @@ const sortByTime = (eventA, eventB) => getDateDiff(eventB) - getDateDiff(eventA)
 const sortByDay = (eventA, eventB) => eventA.dateFrom - eventB.dateFrom;
 
 const getInteger = (str) => {
-  const num = parseInt(str, '10');
+  const num = parseInt(str, 10);
   return isNaN(num) ? 0 : num;
 };
 
