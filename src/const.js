@@ -1,4 +1,6 @@
 const DEFAULT_EVENT_TYPE = 'Flight';
+const DEFAULT_FILTER = 'everything';
+const DEFAULT_SORT_TYPE = 'day';
 
 const BLANK_TRIP_EVENT = {
   id: 0,
@@ -6,7 +8,7 @@ const BLANK_TRIP_EVENT = {
   dateFrom: new Date(),
   dateTo: null,
   destination: null,
-  price: 0,
+  basePrice: 0,
   offers: [],
   isFavorite: false,
 };
@@ -57,11 +59,22 @@ const DateFormats = {
   MINUTES: 'mm[m]',
 };
 
+const ButtonTypes = {
+  SAVE: 'Save',
+  SAVING: 'Saving',
+  DELETE: 'Delete',
+  DELETING: 'Deleting',
+  CANCEL: 'Cancel',
+};
+
 export {
   BLANK_TRIP_EVENT,
   EVENT_TYPES,
+  DEFAULT_FILTER,
+  DEFAULT_SORT_TYPE,
   SortTypes,
   Filters,
   TripEmptyMessages,
-  DateFormats
+  DateFormats,
+  ButtonTypes
 };

@@ -11,8 +11,23 @@ const getIsDisabledAttr = (isDisabled) => isDisabled ? 'disabled' : '';
 
 const updateItem = (items, updatedItem) => items.map((item) => item.id === updatedItem.id ? updatedItem : item);
 
-const sortByPrice = (eventA, eventB) => eventB.price - eventA.price;
+const sortByPrice = (eventA, eventB) => eventB.basePrice - eventA.basePrice;
 const sortByTime = (eventA, eventB) => getDateDiff(eventB) - getDateDiff(eventA);
 const sortByDay = (eventA, eventB) => eventA.dateFrom - eventB.dateFrom;
 
-export { firstLetterUpperCase, isEmpty, getIsCheckedAttr, getIsDisabledAttr, updateItem, sortByPrice, sortByTime, sortByDay };
+const getInteger = (str) => {
+  const num = parseInt(str, 10);
+  return isNaN(num) ? 0 : num;
+};
+
+export {
+  firstLetterUpperCase,
+  isEmpty,
+  getIsCheckedAttr,
+  getIsDisabledAttr,
+  updateItem,
+  sortByPrice,
+  sortByTime,
+  sortByDay,
+  getInteger
+};

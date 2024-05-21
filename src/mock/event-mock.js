@@ -32,7 +32,7 @@ const createMockEvent = (isOdd = false) => {
     dateFrom: dateStart,
     dateTo: dateEnd,
     destination: destinationId,
-    price: getRandomInt(100),
+    basePrice: getRandomInt(100),
     isFavorite: getRandomBoolean(),
     offers: offerIds,
   };

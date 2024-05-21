@@ -29,7 +29,7 @@ const createOffersTemplate = (offers) => {
 };
 
 const createTripEventTemplate = (tripEvent, offers, destinations) => {
-  const {type, dateFrom, dateTo, price, isFavorite} = tripEvent;
+  const {type, dateFrom, dateTo, basePrice, isFavorite} = tripEvent;
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
   const {name: destinationName} = destinations.find((destination) => destination.id === tripEvent.destination);
   const {offers: typedOffers} = offers.find((offer) => offer.type === type);
@@ -45,7 +45,7 @@ const createTripEventTemplate = (tripEvent, offers, destinations) => {
       <h3 class="event__title">${type} ${destinationName}</h3>
       ${createEventScheduleTemplate(dateFrom, dateTo)}
       <p class="event__price">
-        &euro;&nbsp;<span class="event__price-value">${price}</span>
+        &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
