@@ -14,10 +14,10 @@ const displayDuration = (dateFrom, dateTo) => {
   }
 
   if (dateDelta.hours()) {
-    return dateDelta.format(DateFormats.HOURS);
+    return dateDelta.format(DateFormats.HOUR);
   }
 
-  return dateDelta.format(DateFormats.MINUTES);
+  return dateDelta.format(DateFormats.MINUTE);
 };
 
 const displayDateMonth = (date) => date ? dayjs(date).format(DateFormats.MONTH_DAY) : '';

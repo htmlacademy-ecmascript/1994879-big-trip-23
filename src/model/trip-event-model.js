@@ -1,6 +1,6 @@
 import { Filters, SortTypes, DEFAULT_FILTER, DEFAULT_SORT_TYPE } from '../const';
 import { BASE_URL, AUTHORIZATION } from '../service/const';
-import { sortByPrice, sortByTime, sortByDay } from '../utils/common';
+import { FilterFunctions, SortFunctions } from '../utils/sort-filter';
 import TripApiService from '../service/trip-api-service';
 
 export default class TripEventModel {
@@ -90,34 +90,7 @@ export default class TripEventModel {
     this.#sortTypes = Object.values(SortTypes);
   }
 
-  #getSortedTripEvents = (tripEvents, sortType) => {
-    switch (sortType) {
-      case SortTypes.DAY:
-        return tripEvents.sort(sortByDay);
-      case SortTypes.TIME:
-        return tripEvents.sort(sortByTime);
-      case SortTypes.PRICE:
-        return tripEvents.sort(sortByPrice);
-      default:
-        return new Error(`Invalid sort type: ${sortType}`);
-    }
-  };
-
-  #getFilteredTripEvents = (tripEvents, filter) => {
-    const currentDate = new Date();
-    switch (filter) {
-      case Filters.EVERYTHING:
-        return [...tripEvents];
-      case Filters.FUTURE:
-        return tripEvents.filter((tripEvent) => tripEvent.dateFrom > currentDate);
-      case Filters.PRESENT:
-        return tripEvents.filter((tripEvent) => tripEvent.dateFrom >= currentDate && tripEvent.dateTo <= currentDate);
-      case Filters.PAST:
-        return tripEvents.filter((tripEvent) => tripEvent.dateTo < currentDate);
-      default:
-        throw new Error(`Invalid filter: ${filter}`);
-    }
-  };
-
+  #getSortedTripEvents = (tripEvents, sortType) => tripEvents.sort(SortFunctions[sortType]);
+  #getFilteredTripEvents = (tripEvents, filter) => tripEvents.filter(FilterFunctions[filter]);
   #getDestinationName = (id) => this.#destinations.find((destination) => destination.id === id).name;
 }
