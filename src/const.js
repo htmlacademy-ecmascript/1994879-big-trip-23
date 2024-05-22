@@ -46,7 +46,8 @@ const DateFormats = {
   DATE: 'YYYY-MM-DD',
   TIME: 'HH:mm',
   DATE_TIME_SYSTEM: 'YYYY-MM-DDTHH:mm',
-  DATE_TIME: 'YY/MM/DD HH:mm',
+  DATE_TIME: 'DD/MM/YY HH:mm',
+  FLATPICKR: 'd/m/y H:i',
   DAY: 'DD[d] HH[h] mm[m]',
   HOUR: 'HH[h] mm[m]',
   MINUTE: 'mm[m]',
@@ -60,6 +61,11 @@ const ButtonTypes = {
   CANCEL: 'Cancel',
 };
 
+const DefaultFlatpickrConfig = {
+  dateFormat: DateFormats.FLATPICKR,
+  enableTime: true,
+};
+
 export {
   BLANK_TRIP_EVENT,
   EVENT_TYPES,
@@ -68,5 +74,6 @@ export {
   SortTypes,
   Filters,
   DateFormats,
-  ButtonTypes
+  ButtonTypes,
+  DefaultFlatpickrConfig
 };

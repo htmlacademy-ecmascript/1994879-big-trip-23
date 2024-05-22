@@ -36,7 +36,6 @@ export default class EventPresenter {
 
   resetView() {
     if (this.#mode !== Mode.VIEW) {
-      this.#eventEditView.reset(this.#tripEvent);
       this.#switchToViewMode();
     }
   }
@@ -91,6 +90,7 @@ export default class EventPresenter {
   }
 
   #switchToViewMode() {
+    this.#eventEditView.reset(this.#tripEvent);
     replace(this.#tripEventView, this.#eventEditView);
     document.removeEventListener('keydown', this.#onEscKeydown);
 
