@@ -1,7 +1,9 @@
-import { BLANK_TRIP_EVENT, EVENT_TYPES, DateFormats, ButtonTypes } from '../const';
+import { BLANK_TRIP_EVENT, EVENT_TYPES, DateFormats, ButtonTypes, DefaultFlatpickrConfig } from '../const';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { displayDateTime } from '../utils/date';
 import { firstLetterUpperCase, getIsCheckedAttr, getInteger } from '../utils/common';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const getTypeItemTemplate = (type, isChecked) => `
   <div class="event__type-item">
@@ -69,7 +71,8 @@ const getButtonsTemplate = (saveCaption, resetCaption) => `
 
 const getOfferItemTemplate = ({id, title, price, type, isSelected}) => `
   <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox" name="event-offer-${type}" ${isSelected ? 'checked' : ''}>
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox" name="event-offer-${type}"
+      data-offer-id=${id} ${getIsCheckedAttr(isSelected)}>
     <label class="event__offer-label" for="event-offer-${type}-${id}">
       <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
@@ -139,6 +142,8 @@ export default class EventEditView extends AbstractStatefulView {
   #destinations = null;
   #submitHandler = null;
   #cancelHandler = null;
+  #dateFromPicker = null;
+  #dateToPicker = null;
 
   constructor({tripEvent = BLANK_TRIP_EVENT, offers, destinations, onFormSubmit, onFormCancel}) {
     super();
@@ -162,6 +167,13 @@ export default class EventEditView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group').addEventListener('change', this.#onTypeChange);
     this.element.querySelector('#event-destination-1').addEventListener('change', this.#onDestinationChange);
     this.element.querySelector('#event-price-1').addEventListener('change', this.#onPriceChange);
+
+    const availableOffers = this.element.querySelector('.event__available-offers');
+    if (availableOffers) {
+      availableOffers.addEventListener('change', this.#onOfferClick);
+    }
+
+    this.#setDatePickers();
   }
 
   reset(tripEvent) {
@@ -170,6 +182,33 @@ export default class EventEditView extends AbstractStatefulView {
 
   removeElement() {
     super.removeElement();
+
+    this.#dateFromPicker.destroy();
+    this.#dateFromPicker = null;
+    this.#dateToPicker.destroy();
+    this.#dateToPicker = null;
+  }
+
+  #setDatePickers() {
+    this.#dateFromPicker = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        ...DefaultFlatpickrConfig,
+        defaultDate: this._state.dateFrom,
+        maxDate: this._state.dateTo,
+        onChange: this.#onDateFromChange,
+      },
+    );
+
+    this.#dateToPicker = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        ...DefaultFlatpickrConfig,
+        defaultDate: this._state.dateTo,
+        minDate: this._state.dateFrom,
+        onChange: this.#onDateToChange,
+      },
+    );
   }
 
   #onFormSubmit = (evt) => {
@@ -187,6 +226,7 @@ export default class EventEditView extends AbstractStatefulView {
     if (this._state.type === type) {
       return;
     }
+
     this.updateElement({
       type,
       offers: [],
@@ -207,6 +247,27 @@ export default class EventEditView extends AbstractStatefulView {
     const price = getInteger(evt.target.value);
     this.updateElement({
       basePrice: price,
+    });
+  };
+
+  #onDateFromChange = ([date]) => {
+    this.updateElement({
+      dateFrom: date,
+    });
+  };
+
+  #onDateToChange = ([date]) => {
+    this.updateElement({
+      dateTo: date,
+    });
+  };
+
+  #onOfferClick = (evt) => {
+    const { dataset: { offerId }, checked } = evt.target;
+    const offers = checked ? [...new Set([...this._state.offers, offerId])] : this._state.offers.filter((id) => id !== offerId);
+
+    this.updateElement({
+      offers,
     });
   };
 }

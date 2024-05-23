@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
 import { render, remove } from '../framework/render';
-import { TripEmptyMessages } from '../const';
+import { TripEmptyMessages } from '../utils/sort-filter';
 
 const createEmptyTemplate = (filter) => `<p class="trip-events__msg">${TripEmptyMessages[filter]}</p>`;
 

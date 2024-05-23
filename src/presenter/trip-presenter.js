@@ -42,14 +42,10 @@ export default class TripPresenter {
     });
   }
 
-  #renderTripEvents() {
-    if (isEmpty(this.#tripEvents)) {
-      this.#renderEmptyView();
-      return;
+  #renderTripEventsView() {
+    if (!this.#tripEventsView) {
+      this.#tripEventsView = new TripEventsView({ container: this.#container });
     }
-
-    this.#renderSortView(this.#model);
-    this.#tripEventsView = new TripEventsView({ container: this.#container });
 
     this.#tripEvents.forEach((tripEvent) => {
       const eventPresenter = new EventPresenter({
@@ -61,6 +57,16 @@ export default class TripPresenter {
       eventPresenter.init(tripEvent);
       this.#eventPresenters.set(tripEvent.id, eventPresenter);
     });
+  }
+
+  #renderTripEvents() {
+    if (isEmpty(this.#tripEvents)) {
+      this.#renderEmptyView();
+      return;
+    }
+
+    this.#renderSortView(this.#model);
+    this.#renderTripEventsView();
   }
 
   #clearTripEvents() {
