@@ -30,8 +30,16 @@ const SortTypes = {
   EVENT: 'event',
   TIME: 'time',
   PRICE: 'price',
-  OFFERS: 'offers'
+  OFFER: 'offers'
 };
+
+const SortInputTypes = [
+  { type: SortTypes.DAY, sortable: true },
+  { type: SortTypes.EVENT, sortable: false },
+  { type: SortTypes.TIME, sortable: true },
+  { type: SortTypes.PRICE, sortable: true },
+  { type: SortTypes.OFFER, sortable: false },
+];
 
 const Filters = {
   EVERYTHING: 'everything',
@@ -72,6 +80,7 @@ export {
   DEFAULT_FILTER,
   DEFAULT_SORT_TYPE,
   SortTypes,
+  SortInputTypes,
   Filters,
   DateFormats,
   ButtonTypes,

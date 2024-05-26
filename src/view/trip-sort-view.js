@@ -1,11 +1,11 @@
 import AbstractView from '../framework/view/abstract-view';
 import { render } from '../framework/render';
-import { firstLetterUpperCase } from '../utils/common';
-import { getIsCheckedAttr, getIsDisabledAttr } from '../utils/common';
+import { firstLetterUpperCase, getIsCheckedAttr, getIsDisabledAttr } from '../utils/common';
+import { SortInputTypes } from '../const';
 
 const SORT_PREFIX = 'sort-';
 
-const createSortItemTemplate = (type, isChecked, isDisabled) => `
+const getSortItemTemplate = (type, isChecked, isDisabled) => `
   <div class="trip-sort__item  trip-sort__item--${type}">
     <input id="sort-${type}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort"
       value="sort-${type}" ${getIsCheckedAttr(isChecked)} ${getIsDisabledAttr(isDisabled)}>
@@ -13,20 +13,18 @@ const createSortItemTemplate = (type, isChecked, isDisabled) => `
   </div>
 `;
 
-const createSortingTemplate = (sortTypes, currentSortType) => `
+const getSortingTemplate = (currentSortType) => `
   <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-    ${sortTypes.map(({ type, disabled }) => createSortItemTemplate(type, type === currentSortType, disabled)).join('')}
+    ${SortInputTypes.map(({ type, sortable }) => getSortItemTemplate(type, type === currentSortType, !sortable)).join('')}
   </form>
 `;
 
 export default class TripSortView extends AbstractView {
-  #sortTypes = [];
   #currentSort = '';
   #sortTypeChangeHandler = null;
 
-  constructor({ sortTypes, currentSort, container, onSortTypeChange }) {
+  constructor({ currentSort, container, onSortTypeChange }) {
     super();
-    this.#sortTypes = sortTypes;
     this.#currentSort = currentSort;
     this.#sortTypeChangeHandler = onSortTypeChange;
     render(this, container);
@@ -35,7 +33,7 @@ export default class TripSortView extends AbstractView {
   }
 
   get template() {
-    return createSortingTemplate(this.#sortTypes, this.#currentSort);
+    return getSortingTemplate(this.#currentSort);
   }
 
   removeElement() {

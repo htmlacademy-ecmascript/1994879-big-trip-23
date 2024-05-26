@@ -29,14 +29,13 @@ export default class TripPresenter {
     this.#tripEmptyView = new TripEmptyView({ filter: this.#model.currentFilter, container: this.#container });
   }
 
-  #renderSortView({ sortTypes, currentSort }) {
+  #renderSortView() {
     if (this.#tripSortView) {
       return;
     }
 
     this.#tripSortView = new TripSortView({
-      sortTypes,
-      currentSort,
+      currentSort: this.#model.currentSort,
       container: this.#container,
       onSortTypeChange: this.#onSortTypeChange,
     });
@@ -65,7 +64,7 @@ export default class TripPresenter {
       return;
     }
 
-    this.#renderSortView(this.#model);
+    this.#renderSortView();
     this.#renderTripEventsView();
   }
 

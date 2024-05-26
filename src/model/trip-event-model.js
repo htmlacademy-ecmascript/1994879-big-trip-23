@@ -2,8 +2,9 @@ import { Filters, SortTypes, DEFAULT_FILTER, DEFAULT_SORT_TYPE } from '../const'
 import { BASE_URL, AUTHORIZATION } from '../service/const';
 import { FilterFunctions, SortFunctions } from '../utils/sort-filter';
 import TripApiService from '../service/trip-api-service';
+import Observable from '../framework/observable';
 
-export default class TripEventModel {
+export default class TripEventModel extends Observable {
   #destinations = [];
   #offers = [];
   #tripEvents = [];
@@ -14,8 +15,8 @@ export default class TripEventModel {
   #tripApiService = new TripApiService(BASE_URL, AUTHORIZATION);
 
   get tripEvents() {
-    const filteredTripEvents = this.#getFilteredTripEvents(this.#tripEvents, this.#currentFilter);
-    return this.#getSortedTripEvents(filteredTripEvents, this.#currentSort);
+    const filteredTripEvents = this.#getFilteredTripEvents(this.#tripEvents, this.currentFilter);
+    return this.#getSortedTripEvents(filteredTripEvents, this.currentSort);
   }
 
   set tripEvents(tripEvents) {
@@ -47,15 +48,11 @@ export default class TripEventModel {
   }
 
   set currentFilter(filter) {
+    if (filter === this.#currentFilter) {
+      return;
+    }
     this.#currentFilter = filter;
-  }
-
-  get sortTypes() {
-    const disabledSortTypes = [SortTypes.EVENT, SortTypes.OFFERS];
-    return this.#sortTypes.map((type) => ({
-      type,
-      disabled: disabledSortTypes.includes(type),
-    }));
+    this._notify();
   }
 
   get currentSort() {
@@ -63,7 +60,11 @@ export default class TripEventModel {
   }
 
   set currentSort(sortType) {
+    if (sortType === this.#currentSort) {
+      return;
+    }
     this.#currentSort = sortType;
+    this._notify();
   }
 
   get tripInfo() {

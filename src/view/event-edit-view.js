@@ -165,15 +165,18 @@ export default class EventEditView extends AbstractStatefulView {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onCancelForm);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#onCancelForm);
     this.element.querySelector('.event__type-group').addEventListener('change', this.#onTypeChange);
-    this.element.querySelector('#event-destination-1').addEventListener('change', this.#onDestinationChange);
-    this.element.querySelector('#event-price-1').addEventListener('change', this.#onPriceChange);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#onDestinationChange);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#onPriceChange);
 
     const availableOffers = this.element.querySelector('.event__available-offers');
     if (availableOffers) {
       availableOffers.addEventListener('change', this.#onOfferClick);
     }
 
-    this.#setDatePickers();
+    this.#setDatePickers({
+      startTimeElement: this.element.querySelector('#event-start-time-1'),
+      endTimeElement: this.element.querySelector('#event-end-time-1')
+    });
   }
 
   reset(tripEvent) {
@@ -189,9 +192,9 @@ export default class EventEditView extends AbstractStatefulView {
     this.#dateToPicker = null;
   }
 
-  #setDatePickers() {
+  #setDatePickers({ startTimeElement, endTimeElement }) {
     this.#dateFromPicker = flatpickr(
-      this.element.querySelector('#event-start-time-1'),
+      startTimeElement,
       {
         ...DefaultFlatpickrConfig,
         defaultDate: this._state.dateFrom,
@@ -201,7 +204,7 @@ export default class EventEditView extends AbstractStatefulView {
     );
 
     this.#dateToPicker = flatpickr(
-      this.element.querySelector('#event-end-time-1'),
+      endTimeElement,
       {
         ...DefaultFlatpickrConfig,
         defaultDate: this._state.dateTo,
