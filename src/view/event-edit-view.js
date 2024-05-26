@@ -1,7 +1,7 @@
 import { BLANK_TRIP_EVENT, EVENT_TYPES, DateFormats, ButtonTypes, DefaultFlatpickrConfig } from '../const';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { displayDateTime } from '../utils/date';
-import { firstLetterUpperCase, getIsCheckedAttr, getInteger } from '../utils/common';
+import { firstLetterUpperCase, getIsCheckedAttr, getInteger, addItem, removeItem } from '../utils/common';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -264,7 +264,9 @@ export default class EventEditView extends AbstractStatefulView {
 
   #onOfferClick = (evt) => {
     const { dataset: { offerId }, checked } = evt.target;
-    const offers = checked ? [...new Set([...this._state.offers, offerId])] : this._state.offers.filter((id) => id !== offerId);
+    const offers = checked
+      ? addItem(this._state.offers, offerId)
+      : removeItem(this._state.offers, offerId);
 
     this.updateElement({
       offers,
