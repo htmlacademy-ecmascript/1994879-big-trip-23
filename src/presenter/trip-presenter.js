@@ -3,7 +3,7 @@ import TripSortView from '../view/trip-sort-view';
 import TripEventsView from '../view/trip-events-view';
 import TripEmptyView from '../view/trip-empty-view';
 import EventPresenter from './event-presenter';
-import { updateItem } from '../utils/common';
+import { UserAction, UpdateType } from '../const';
 
 export default class TripPresenter {
   #model = null;
@@ -17,12 +17,12 @@ export default class TripPresenter {
   constructor({ container, model }) {
     this.#container = container;
     this.#model = model;
+    this.#model.addObserver(this.#onModelChange);
   }
 
   init() {
     this.#tripEvents = this.#model.tripEvents;
-    this.#clearTripEvents();
-    this.#renderTripEvents();
+    this.#onModelChange(UpdateType.MAJOR);
   }
 
   #renderEmptyView() {
@@ -76,18 +76,41 @@ export default class TripPresenter {
     }
   }
 
-  #onTripEventChange = (updatedTripEvent) => {
-    this.#tripEvents = updateItem(this.#tripEvents, updatedTripEvent);
-    this.#eventPresenters.get(updatedTripEvent.id).init(updatedTripEvent);
+  #onTripEventChange = (actionType, updateType, data) => {
+    console.log(actionType, updateType, data);
+    switch (actionType) {
+      case UserAction.UPDATE:
+        this.#model.updateTripEvent(updateType, data);
+        break;
+      case UserAction.ADD:
+        this.#model.addTripEvent(updateType, data);
+        break;
+      case UserAction.DELETE:
+        this.#model.deleteTripEvent(updateType, data);
+        break;
+    }
+  };
+
+  #onModelChange = (updateType, data) => {
+    console.log(updateType, data);
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#eventPresenters.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        this.#clearTripEvents();
+        this.#renderTripEvents();
+        break;
+      case UpdateType.MAJOR:
+        this.#clearTripEvents();
+        this.#renderTripEvents();
+        break;
+    }
   };
 
   #onTripEventModeChange = () => this.#eventPresenters.forEach((presenter) => presenter.resetView());
 
   #onSortTypeChange = (newSort) => {
-    if (this.#model.currentSort === newSort) {
-      return;
-    }
-
     this.#model.currentSort = newSort;
     this.init();
   };

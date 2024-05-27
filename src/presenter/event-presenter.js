@@ -1,6 +1,7 @@
 import EventEditView from '../view/event-edit-view';
 import TripEventView from '../view/trip-event-view';
 import { replace, remove } from '../framework/render';
+import { UserAction, UpdateType } from '../const';
 
 const Mode = {
   VIEW: 'View',
@@ -98,17 +99,31 @@ export default class EventPresenter {
   }
 
   #onEditClick = () => this.#switchToEditMode();
-  #onFormCancel = () => this.#switchToViewMode();
+  #onFormCancel = (tripEvent) => {
+    if (tripEvent.id) {
+      this.#tripEventChangeHandler(
+        UserAction.DELETE,
+        UpdateType.MINOR,
+        tripEvent
+      );
+    }
+    this.#switchToViewMode();
+  }
 
   #onFormSubmit = (tripEvent) => {
-    this.#tripEventChangeHandler(tripEvent);
+    this.#tripEventChangeHandler(
+      UserAction.UPDATE,
+      UpdateType.MINOR,
+      tripEvent
+    );
     this.#switchToViewMode();
   };
 
-  #onFavoriteClick = () => this.#tripEventChangeHandler({
-    ...this.#tripEvent,
-    isFavorite: !this.#tripEvent.isFavorite,
-  });
+  #onFavoriteClick = () => this.#tripEventChangeHandler(
+    UserAction.UPDATE,
+    UpdateType.PATCH,
+    { ...this.#tripEvent, isFavorite: !this.#tripEvent.isFavorite }
+  );
 
   #onEscKeydown = (evt) => {
     if (evt.key === 'Escape') {

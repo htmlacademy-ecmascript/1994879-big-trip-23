@@ -3,7 +3,7 @@ const DEFAULT_FILTER = 'everything';
 const DEFAULT_SORT_TYPE = 'day';
 
 const BLANK_TRIP_EVENT = {
-  id: 0,
+  id: null,
   type: DEFAULT_EVENT_TYPE,
   dateFrom: new Date(),
   dateTo: null,
@@ -74,6 +74,18 @@ const DefaultFlatpickrConfig = {
   enableTime: true,
 };
 
+const UserAction = {
+  ADD: 'ADD',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
 export {
   BLANK_TRIP_EVENT,
   EVENT_TYPES,
@@ -84,5 +96,7 @@ export {
   Filters,
   DateFormats,
   ButtonTypes,
-  DefaultFlatpickrConfig
+  DefaultFlatpickrConfig,
+  UserAction,
+  UpdateType
 };

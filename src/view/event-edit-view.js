@@ -1,7 +1,7 @@
 import { BLANK_TRIP_EVENT, EVENT_TYPES, DateFormats, ButtonTypes, DefaultFlatpickrConfig } from '../const';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { displayDateTime } from '../utils/date';
-import { firstLetterUpperCase, getIsCheckedAttr, getInteger, addItem, removeItem } from '../utils/common';
+import { firstLetterUpperCase, getIsCheckedAttr, getIsDisabledAttr, getInteger, addItem, removeItem } from '../utils/common';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -61,13 +61,20 @@ const getPriceTemplate = (price) => `
   </div>
 `;
 
-const getButtonsTemplate = (saveCaption, resetCaption) => `
-  <button class="event__save-btn  btn  btn--blue" type="submit">${saveCaption}</button>
-  <button class="event__reset-btn" type="reset">${resetCaption}</button>
-  <button class="event__rollup-btn" type="button">
-    <span class="visually-hidden">Open event</span>
-  </button>
-`;
+const getRollupButtonTemplate = (visible, isDisabled) => visible
+  ? `<button class="event__rollup-btn" type="button" ${getIsDisabledAttr(isDisabled)}>
+      <span class="visually-hidden">Open event</span>
+    </button>`
+  : '';
+
+const getButtonsTemplate = (isNew, isDisabled) => {
+  const resetCaption = isNew ? ButtonTypes.CANCEL : ButtonTypes.DELETE;
+
+  return `
+    <button class="event__save-btn  btn  btn--blue" type="submit" ${getIsDisabledAttr(isDisabled)}>${ButtonTypes.SAVE}</button>
+    <button class="event__reset-btn" type="reset" ${getIsDisabledAttr(isDisabled)}>${resetCaption}</button>
+    ${getRollupButtonTemplate(isNew, isDisabled)}`;
+};
 
 const getOfferItemTemplate = ({id, title, price, type, isSelected}) => `
   <div class="event__offer-selector">
@@ -112,7 +119,7 @@ const getDestinationTemplate = ({ description, pictures }) => !description || !p
   </section>`;
 
 const createEventEditTemplate = (tripEvent, offers, destinations) => {
-  const { type, dateFrom, dateTo, basePrice } = tripEvent;
+  const {id, type, dateFrom, dateTo, basePrice } = tripEvent;
   const eventDestination = destinations.find((destination) => destination.id === tripEvent.destination);
   const { offers: typedOffers } = offers.find((offer) => offer.type === type);
   const tripOffers = typedOffers.map((offer) => ({
@@ -128,7 +135,7 @@ const createEventEditTemplate = (tripEvent, offers, destinations) => {
       ${getEventDestination(type, eventDestination.name, destinations)}
       ${getTimePeriodTemplate(dateFrom, dateTo)}
       ${getPriceTemplate(basePrice)}
-      ${getButtonsTemplate(ButtonTypes.SAVE, ButtonTypes.DELETE)}
+      ${getButtonsTemplate(id === null, false)}
     </header>
     <section class="event__details">
       ${getOffersTemplate(tripOffers)}
@@ -141,16 +148,18 @@ export default class EventEditView extends AbstractStatefulView {
   #offers = null;
   #destinations = null;
   #submitHandler = null;
+  #deleteHandler = null;
   #cancelHandler = null;
   #dateFromPicker = null;
   #dateToPicker = null;
 
-  constructor({tripEvent = BLANK_TRIP_EVENT, offers, destinations, onFormSubmit, onFormCancel}) {
+  constructor({tripEvent = BLANK_TRIP_EVENT, offers, destinations, onFormSubmit, onFormDelete, onFormCancel}) {
     super();
     this._setState(tripEvent);
     this.#offers = offers;
     this.#destinations = destinations;
     this.#submitHandler = onFormSubmit;
+    this.#deleteHandler = onFormDelete;
     this.#cancelHandler = onFormCancel;
 
     this._restoreHandlers();
@@ -162,15 +171,18 @@ export default class EventEditView extends AbstractStatefulView {
 
   _restoreHandlers() {
     this.element.addEventListener('submit', this.#onFormSubmit);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onCancelForm);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#onCancelForm);
-    this.element.querySelector('.event__type-group').addEventListener('change', this.#onTypeChange);
+    this.element.querySelector('.event__type-group').addEventListener('change', id === this.#onTypeChange);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#onDestinationChange);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#onPriceChange);
 
     const availableOffers = this.element.querySelector('.event__available-offers');
     if (availableOffers) {
       availableOffers.addEventListener('change', this.#onOfferClick);
+    }
+    const rollupButtonElement = this.element.querySelector('.event__rollup-btn');
+    if (rollupButtonElement) {
+      rollupButtonElement.addEventListener('click', this.#onCancelForm);
     }
 
     this.#setDatePickers({
@@ -221,7 +233,7 @@ export default class EventEditView extends AbstractStatefulView {
 
   #onCancelForm = (evt) => {
     evt.preventDefault();
-    this.#cancelHandler();
+    this.#cancelHandler(this._state);
   };
 
   #onTypeChange = (evt) => {
@@ -229,7 +241,6 @@ export default class EventEditView extends AbstractStatefulView {
     if (this._state.type === type) {
       return;
     }
-
     this.updateElement({
       type,
       offers: [],
