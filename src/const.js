@@ -88,6 +88,16 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
+const FormMode = {
+  VIEW: 'View',
+  EDIT: 'Edit',
+};
+
+const Messages = {
+  LOADING: 'Loading...',
+  ERROR: 'Failed to load latest route information'
+};
+
 export {
   BLANK_TRIP_EVENT,
   EVENT_TYPES,
@@ -100,5 +110,7 @@ export {
   ButtonTypes,
   DefaultFlatpickrConfig,
   UserAction,
-  UpdateType
+  UpdateType,
+  FormMode,
+  Messages
 };

@@ -1,6 +1,7 @@
 import { Filters, DEFAULT_FILTER, DEFAULT_SORT_TYPE, UpdateType } from '../const';
 import { BASE_URL, AUTHORIZATION } from '../service/const';
-import { FilterFunctions, SortFunctions } from '../utils/sort-filter';
+import { FilterFunctions } from '../utils/filter';
+import { SortFunctions } from '../utils/sort';
 import TripApiService from '../service/trip-api-service';
 import Observable from '../framework/observable';
 import { removeItem } from '../utils/common';
@@ -102,12 +103,12 @@ export default class TripEventModel extends Observable {
     // } catch(error) {
     //   throw new Error(error);
     // };
-    const updateTripEvent = this.#findTripEvent(tripEvent.id);
-    if (!updateTripEvent) {
+    const selectedTripEvent = this.#findTripEvent(tripEvent.id);
+    if (!selectedTripEvent) {
       throw new Error(`Can't update trip event ${tripEvent.id}`);
     }
-    Object.assign(updateTripEvent, tripEvent);
-    this._notify(UpdateType, tripEvent);
+    Object.assign(selectedTripEvent, tripEvent);
+    this._notify(updateType, tripEvent);
   }
 
   deleteTripEvent(updateType, tripEvent) {
@@ -116,12 +117,11 @@ export default class TripEventModel extends Observable {
     // } catch(error) {
     //   throw new Error(error);
     // };
-    const updateTripEvent = this.#findTripEvent(tripEvent.id);
-    if (!updateTripEvent) {
+    const selectedTripEvent = this.#findTripEvent(tripEvent.id);
+    if (!selectedTripEvent) {
       throw new Error(`Can't delete trip event ${tripEvent.id}`);
     }
-    //this.#tripEvents = this.#tripEvents.filter(({id}) => id !== updateTripEvent.id);
-    this.#tripEvents = removeItem(this.#tripEvents, updateTripEvent);
+    this.#tripEvents = removeItem(this.#tripEvents, selectedTripEvent);
     this._notify(updateType);
   }
 

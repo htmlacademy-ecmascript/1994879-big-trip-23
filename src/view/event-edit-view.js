@@ -115,7 +115,7 @@ const getDestinationTemplate = ({ description, pictures }) => !description || !p
   </section>`;
 
 const createEventEditTemplate = (tripEvent, offers, destinations) => {
-  const {id, type, dateFrom, dateTo, basePrice, isAdding, isSaving, isDeleting } = tripEvent;
+  const { type, dateFrom, dateTo, basePrice, isAdding, isSaving, isDeleting } = tripEvent;
   const eventDestination = destinations.find((destination) => destination.id === tripEvent.destination);
   const { offers: typedOffers } = offers.find((offer) => offer.type === type);
   const tripOffers = typedOffers.map((offer) => ({
@@ -308,5 +308,5 @@ export default class EventEditView extends AbstractStatefulView {
     delete tripEvent.isSaving;
     delete tripEvent.isDeleting;
     return tripEvent;
-  }
+  };
 }
