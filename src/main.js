@@ -10,7 +10,7 @@ const start = async () => {
   const tripEventModel = new TripEventModel();
   await tripEventModel.init();
 
-  const headerPresenter = new HeaderPresenter(
+  new HeaderPresenter(
     {
       container: {
         filter: filtersElement,
@@ -19,15 +19,12 @@ const start = async () => {
       model: tripEventModel
     }
   );
-  const tripPresenter = new TripPresenter(
+  new TripPresenter(
     {
       container: eventsElement,
       model: tripEventModel
     }
   );
-
-  headerPresenter.init();
-  tripPresenter.init();
 };
 
 start();

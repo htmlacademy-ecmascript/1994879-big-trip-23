@@ -29,8 +29,8 @@ const createMockEvent = (isOdd = false) => {
   return {
     id: getId(),
     type: type,
-    dateFrom: dateStart,
-    dateTo: dateEnd,
+    dateFrom: new Date(dateStart),
+    dateTo: new Date(dateEnd),
     destination: destinationId,
     basePrice: getRandomInt(100),
     isFavorite: getRandomBoolean(),

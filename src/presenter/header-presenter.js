@@ -11,6 +11,8 @@ export default class HeaderPresenter {
     this.#filterContainer = container.filter;
     this.#infoContainer = container.info;
     this.#model = model;
+
+    this.init();
   }
 
   init() {

@@ -73,7 +73,7 @@ const getButtonsTemplate = (isNew, isDisabled) => {
   return `
     <button class="event__save-btn  btn  btn--blue" type="submit" ${getIsDisabledAttr(isDisabled)}>${ButtonTypes.SAVE}</button>
     <button class="event__reset-btn" type="reset" ${getIsDisabledAttr(isDisabled)}>${resetCaption}</button>
-    ${getRollupButtonTemplate(isNew, isDisabled)}`;
+    ${getRollupButtonTemplate(!isNew, isDisabled)}`;
 };
 
 const getOfferItemTemplate = ({id, title, price, type, isSelected}) => `
@@ -88,20 +88,14 @@ const getOfferItemTemplate = ({id, title, price, type, isSelected}) => `
   </div>
 `;
 
-const getOffersTemplate = (offers) => {
-  if (!offers.length) {
-    return '';
-  }
+const getOffersTemplate = (offers) => !offers.length ? '' : `
+  <section class="event__section  event__section--offers">
+    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-  return `
-    <section class="event__section  event__section--offers">
-      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-      <div class="event__available-offers">
-        ${offers.map((offer) => getOfferItemTemplate(offer)).join('')}
-      </div>
-    </section>`;
-};
+    <div class="event__available-offers">
+      ${offers.map((offer) => getOfferItemTemplate(offer)).join('')}
+    </div>
+  </section>`;
 
 const createPhotoTapeTemplate = (pictures) => !pictures.length ? '' : `
   <div class="event__photos-container">
@@ -114,7 +108,6 @@ const getDestinationTemplate = ({ description, pictures }) => !description || !p
   <section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
     <p class="event__destination-description">${description}</p>
-
     ${createPhotoTapeTemplate(pictures)}
   </section>`;
 
@@ -171,8 +164,8 @@ export default class EventEditView extends AbstractStatefulView {
 
   _restoreHandlers() {
     this.element.addEventListener('submit', this.#onFormSubmit);
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#onCancelForm);
-    this.element.querySelector('.event__type-group').addEventListener('change', id === this.#onTypeChange);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#getResetHandler());
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#onTypeChange);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#onDestinationChange);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#onPriceChange);
 
@@ -196,13 +189,15 @@ export default class EventEditView extends AbstractStatefulView {
   }
 
   removeElement() {
-    super.removeElement();
-
     this.#dateFromPicker.destroy();
     this.#dateFromPicker = null;
     this.#dateToPicker.destroy();
     this.#dateToPicker = null;
+
+    super.removeElement();
   }
+
+  #getResetHandler = () => this._state.id === null ? this.#onCancelForm : this.#onDeleteForm;
 
   #setDatePickers({ startTimeElement, endTimeElement }) {
     this.#dateFromPicker = flatpickr(
@@ -231,9 +226,14 @@ export default class EventEditView extends AbstractStatefulView {
     this.#submitHandler(this._state);
   };
 
+  #onDeleteForm = (evt) => {
+    evt.preventDefault();
+    this.#deleteHandler(this._state);
+  };
+
   #onCancelForm = (evt) => {
     evt.preventDefault();
-    this.#cancelHandler(this._state);
+    this.#cancelHandler();
   };
 
   #onTypeChange = (evt) => {

@@ -8,7 +8,6 @@ import { UserAction, UpdateType } from '../const';
 export default class TripPresenter {
   #model = null;
   #container = null;
-  #tripEvents = [];
   #tripEventsView = null;
   #tripSortView = null;
   #tripEmptyView = null;
@@ -18,11 +17,11 @@ export default class TripPresenter {
     this.#container = container;
     this.#model = model;
     this.#model.addObserver(this.#onModelChange);
+    this.#onModelChange(UpdateType.MAJOR);
   }
 
-  init() {
-    this.#tripEvents = this.#model.tripEvents;
-    this.#onModelChange(UpdateType.MAJOR);
+  get tripEvents() {
+    return this.#model.tripEvents;
   }
 
   #renderEmptyView() {
@@ -41,12 +40,12 @@ export default class TripPresenter {
     });
   }
 
-  #renderTripEventsView() {
+  #renderTripEventsView(tripEvents) {
     if (!this.#tripEventsView) {
       this.#tripEventsView = new TripEventsView({ container: this.#container });
     }
 
-    this.#tripEvents.forEach((tripEvent) => {
+    tripEvents.forEach((tripEvent) => {
       const eventPresenter = new EventPresenter({
         model: this.#model,
         container: this.#tripEventsView.element,
@@ -59,13 +58,14 @@ export default class TripPresenter {
   }
 
   #renderTripEvents() {
-    if (isEmpty(this.#tripEvents)) {
+    const tripEvents = this.tripEvents;
+    if (isEmpty(tripEvents)) {
       this.#renderEmptyView();
       return;
     }
 
     this.#renderSortView();
-    this.#renderTripEventsView();
+    this.#renderTripEventsView(tripEvents);
   }
 
   #clearTripEvents() {
@@ -76,8 +76,16 @@ export default class TripPresenter {
     }
   }
 
+  #onTripEventModeChange = () => this.#eventPresenters.forEach((presenter) => presenter.resetView());
+
+  #onSortTypeChange = (newSort) =>
+    this.#onTripEventChange(
+      UserAction.SORT,
+      UpdateType.MINOR,
+      newSort
+    );
+
   #onTripEventChange = (actionType, updateType, data) => {
-    console.log(actionType, updateType, data);
     switch (actionType) {
       case UserAction.UPDATE:
         this.#model.updateTripEvent(updateType, data);
@@ -88,11 +96,14 @@ export default class TripPresenter {
       case UserAction.DELETE:
         this.#model.deleteTripEvent(updateType, data);
         break;
+      case UserAction.SORT:
+        this.#model.setCurrentSort(updateType, data);
+        break;
+
     }
   };
 
   #onModelChange = (updateType, data) => {
-    console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
         this.#eventPresenters.get(data.id).init(data);
@@ -108,10 +119,4 @@ export default class TripPresenter {
     }
   };
 
-  #onTripEventModeChange = () => this.#eventPresenters.forEach((presenter) => presenter.resetView());
-
-  #onSortTypeChange = (newSort) => {
-    this.#model.currentSort = newSort;
-    this.init();
-  };
 }

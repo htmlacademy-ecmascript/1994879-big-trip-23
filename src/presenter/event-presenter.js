@@ -25,6 +25,26 @@ export default class EventPresenter {
     this.#changeModeHandler = onModeChange;
   }
 
+  get mode() {
+    return this.#mode;
+  }
+
+  set mode(newMode) {
+    if (this.mode === newMode) {
+      return;
+    }
+
+    switch (newMode) {
+      case Mode.VIEW:
+        this.#switchToViewMode();
+        break;
+      case Mode.EDIT:
+        this.#switchToEditMode();
+        break;
+    }
+    this.#mode = newMode;
+  }
+
   init(tripEvent) {
     this.#tripEvent = tripEvent;
     this.#renderTripEvent(tripEvent);
@@ -33,12 +53,11 @@ export default class EventPresenter {
   destroy() {
     remove(this.#tripEventView);
     remove(this.#eventEditView);
+    this.#removeListeners();
   }
 
   resetView() {
-    if (this.#mode !== Mode.VIEW) {
-      this.#switchToViewMode();
-    }
+    this.mode = Mode.VIEW;
   }
 
   #renderTripEvent(tripEvent) {
@@ -62,6 +81,7 @@ export default class EventPresenter {
       offers,
       destinations,
       onFormSubmit: this.#onFormSubmit,
+      onFormDelete: this.#onFormDelete,
       onFormCancel: this.#onFormCancel,
     });
 
@@ -69,11 +89,11 @@ export default class EventPresenter {
       return;
     }
 
-    if (this.#mode === Mode.EDIT) {
+    if (this.mode === Mode.EDIT) {
       replace(this.#eventEditView, prevEventEditView);
     }
 
-    if (this.#mode === Mode.VIEW) {
+    if (this.mode === Mode.VIEW) {
       this.#eventEditView.reset(tripEvent);
       replace(this.#tripEventView, prevTripEventView);
     }
@@ -84,22 +104,22 @@ export default class EventPresenter {
 
   #switchToEditMode() {
     replace(this.#eventEditView, this.#tripEventView);
-    document.addEventListener('keydown', this.#onEscKeydown);
-
+    this.#addListeners();
     this.#changeModeHandler();
-    this.#mode = Mode.EDIT;
   }
 
   #switchToViewMode() {
     this.#eventEditView.reset(this.#tripEvent);
     replace(this.#tripEventView, this.#eventEditView);
-    document.removeEventListener('keydown', this.#onEscKeydown);
-
-    this.#mode = Mode.VIEW;
+    this.#removeListeners();
   }
 
-  #onEditClick = () => this.#switchToEditMode();
-  #onFormCancel = (tripEvent) => {
+  #onEditClick = () => (this.mode = Mode.EDIT);
+  #onFormCancel = () => (this.mode = Mode.VIEW);
+  #addListeners = () => document.addEventListener('keydown', this.#onEscKeydown);
+  #removeListeners = () => document.removeEventListener('keydown', this.#onEscKeydown);
+
+  #onFormDelete = (tripEvent) => {
     if (tripEvent.id) {
       this.#tripEventChangeHandler(
         UserAction.DELETE,
@@ -107,8 +127,7 @@ export default class EventPresenter {
         tripEvent
       );
     }
-    this.#switchToViewMode();
-  }
+  };
 
   #onFormSubmit = (tripEvent) => {
     this.#tripEventChangeHandler(
@@ -116,7 +135,6 @@ export default class EventPresenter {
       UpdateType.MINOR,
       tripEvent
     );
-    this.#switchToViewMode();
   };
 
   #onFavoriteClick = () => this.#tripEventChangeHandler(
@@ -128,7 +146,7 @@ export default class EventPresenter {
   #onEscKeydown = (evt) => {
     if (evt.key === 'Escape') {
       evt.stopPropagation();
-      this.#switchToViewMode();
+      this.mode = Mode.VIEW;
     }
   };
 }
