@@ -63,9 +63,9 @@ const DateFormats = {
 
 const ButtonTypes = {
   SAVE: 'Save',
-  SAVING: 'Saving',
+  SAVING: 'Saving...',
   DELETE: 'Delete',
-  DELETING: 'Deleting',
+  DELETING: 'Deleting...',
   CANCEL: 'Cancel',
 };
 

@@ -1,12 +1,9 @@
-import { Filters, DEFAULT_FILTER, DEFAULT_SORT_TYPE } from '../const';
+import { Filters, DEFAULT_FILTER, DEFAULT_SORT_TYPE, UpdateType } from '../const';
 import { BASE_URL, AUTHORIZATION } from '../service/const';
 import { FilterFunctions, SortFunctions } from '../utils/sort-filter';
 import TripApiService from '../service/trip-api-service';
 import Observable from '../framework/observable';
 import { removeItem } from '../utils/common';
-import { getMockedDestinations } from '../mock/destination-mock';
-import { getMockedOffers } from '../mock/offer-mock';
-import { getMockedEvents } from '../mock/event-mock';
 
 export default class TripEventModel extends Observable {
   #destinations = [];
@@ -67,13 +64,18 @@ export default class TripEventModel extends Observable {
   }
 
   async init() {
-    // this.#destinations = await this.#tripApiService.getDestinations();
-    // this.#offers = await this.#tripApiService.getOffers();
-    // this.#tripEvents = (await this.#tripApiService.getPoints()).map(TripApiService.adaptToClient);
-    this.#destinations = getMockedDestinations();
-    this.#offers = getMockedOffers();
-    this.#tripEvents = getMockedEvents();
+    try {
+      this.#destinations = await this.#tripApiService.getDestinations();
+      this.#offers = await this.#tripApiService.getOffers();
+      this.#tripEvents = (await this.#tripApiService.getPoints()).map(TripApiService.adaptToClient);
+    } catch(error) {
+      this.#destinations = [];
+      this.#offers = [];
+      this.#tripEvents = [];
+    }
+
     this.#filters = Object.values(Filters);
+    this._notify(UpdateType.MAJOR);
   }
 
   setCurrentSort(updateType, sortType) {
@@ -84,17 +86,17 @@ export default class TripEventModel extends Observable {
     this._notify(updateType, sortType);
   }
 
-  addTripEvent(UpdateType, tripEvent) {
+  addTripEvent(updateType, tripEvent) {
     // try {
     //   this.#tripApiService.addPoint(tripEvent);
     // } catch(error) {
     //   throw new Error(error);
     // };
     this.#tripEvents.push(tripEvent);
-    this._notify(UpdateType, tripEvent);
+    this._notify(updateType, tripEvent);
   }
 
-  updateTripEvent(UpdateType, tripEvent) {
+  updateTripEvent(updateType, tripEvent) {
     // try {
     //   this.#tripApiService.updatePoint(tripEvent);
     // } catch(error) {
@@ -108,7 +110,7 @@ export default class TripEventModel extends Observable {
     this._notify(UpdateType, tripEvent);
   }
 
-  deleteTripEvent(UpdateType, tripEvent) {
+  deleteTripEvent(updateType, tripEvent) {
     // try {
     //   this.#tripApiService.deletePoint(tripEvent);
     // } catch(error) {
@@ -120,7 +122,7 @@ export default class TripEventModel extends Observable {
     }
     //this.#tripEvents = this.#tripEvents.filter(({id}) => id !== updateTripEvent.id);
     this.#tripEvents = removeItem(this.#tripEvents, updateTripEvent);
-    this._notify(UpdateType);
+    this._notify(updateType);
   }
 
   #getSortedTripEvents = (tripEvents, sortType) => tripEvents.sort(SortFunctions[sortType]);
