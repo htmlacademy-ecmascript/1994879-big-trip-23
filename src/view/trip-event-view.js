@@ -2,6 +2,8 @@ import AbstractView from '../framework/view/abstract-view';
 import { displayDate, displayDateMonth, displayTime, displayDateTime, displayDuration } from '../utils/date';
 import { isEmpty } from '../utils/common';
 import { render, remove } from '../framework/render';
+import he from 'he';
+import { BLANK_TRIP_EVENT } from '../const';
 
 const createEventScheduleTemplate = (dateFrom, dateTo) => `
   <div class="event__schedule">
@@ -14,19 +16,14 @@ const createEventScheduleTemplate = (dateFrom, dateTo) => `
 </div>
 `;
 
-const createOffersTemplate = (offers) => {
-  if (isEmpty(offers)) {
-    return '';
-  }
-
-  return offers.map(({ title, price }) => `
-  <li class="event__offer">
-    <span class="event__offer-title">${title}</span>
-    &plus;&euro;&nbsp;
-    <span class="event__offer-price">${price}</span>
-  </li>
-  `).join('');
-};
+const createOffersTemplate = (offers) => isEmpty(offers) ? '' :
+  offers.map(({ title, price }) => `
+    <li class="event__offer">
+      <span class="event__offer-title">${he.encode(title)}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${he.encode(price.toString())}</span>
+    </li>
+    `).join('');
 
 const createTripEventTemplate = (tripEvent, offers, destinations) => {
   const {type, dateFrom, dateTo, basePrice, isFavorite} = tripEvent;
@@ -42,7 +39,7 @@ const createTripEventTemplate = (tripEvent, offers, destinations) => {
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${type} ${destinationName}</h3>
+      <h3 class="event__title">${type} ${he.encode(destinationName)}</h3>
       ${createEventScheduleTemplate(dateFrom, dateTo)}
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
@@ -73,7 +70,7 @@ export default class TripEventView extends AbstractView {
   #rollupButtonElement = null;
   #favoriteButtonElement = null;
 
-  constructor({tripEvent, offers, destinations, container, onEditClick, onFavoriteClick}) {
+  constructor({tripEvent = BLANK_TRIP_EVENT, offers, destinations, container, onEditClick, onFavoriteClick}) {
     super();
     this.#tripEvent = tripEvent;
     this.#offers = offers;

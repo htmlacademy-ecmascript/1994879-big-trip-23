@@ -7,11 +7,12 @@ const start = async () => {
   const eventsElement = document.querySelector('.trip-events');
   const filtersElement = document.querySelector('.trip-controls__filters');
   const headerMainElement = document.querySelector('.trip-main');
+  const addButtonElement = document.querySelector('.trip-main__event-add-btn');
 
   const tripEventModel = new TripEventModel();
   new TripInfoPresenter({ container: headerMainElement, model: tripEventModel });
   new FilterPresenter({ container: filtersElement, model: tripEventModel });
-  new TripPresenter({ container: eventsElement, model: tripEventModel });
+  new TripPresenter({ container: eventsElement, model: tripEventModel, addButton: addButtonElement });
 
   await tripEventModel.init();
 };
