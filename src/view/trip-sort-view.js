@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import { render } from '../framework/render';
+import { remove, render, RenderPosition } from '../framework/render';
 import { firstLetterUpperCase, getIsCheckedAttr, getIsDisabledAttr } from '../utils/common';
 import { SortInputTypes } from '../const';
 
@@ -27,13 +27,17 @@ export default class TripSortView extends AbstractView {
     super();
     this.#currentSort = currentSort;
     this.#sortTypeChangeHandler = onSortTypeChange;
-    render(this, container);
+    render(this, container, RenderPosition.AFTERBEGIN);
 
     this.element.addEventListener('change', this.#onSortTypeChange);
   }
 
   get template() {
     return getSortingTemplate(this.#currentSort);
+  }
+
+  destroy() {
+    remove(this);
   }
 
   removeElement() {

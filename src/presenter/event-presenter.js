@@ -1,6 +1,6 @@
 import EventEditView from '../view/event-edit-view';
 import TripEventView from '../view/trip-event-view';
-import { replace, remove } from '../framework/render';
+import { replace } from '../framework/render';
 import { UserAction, UpdateType, FormMode } from '../const';
 import { isDatesEqual } from '../utils/date';
 
@@ -47,8 +47,8 @@ export default class EventPresenter {
   }
 
   destroy() {
-    remove(this.#tripEventView);
-    remove(this.#eventEditView);
+    this.#tripEventView.destroy();
+    this.#eventEditView.destroy();
     this.#removeListeners();
   }
 
@@ -94,8 +94,8 @@ export default class EventPresenter {
       replace(this.#tripEventView, prevTripEventView);
     }
 
-    remove(prevTripEventView);
-    remove(prevEventEditView);
+    prevTripEventView.destroy();
+    prevEventEditView.destroy();
   }
 
   #switchToEditMode() {

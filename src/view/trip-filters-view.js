@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
 import { firstLetterUpperCase, getIsCheckedAttr, getIsDisabledAttr } from '../utils/common';
-import { render } from '../framework/render';
+import { render, remove } from '../framework/render';
 
 const FILTER_PREFIX = 'filter-';
 
@@ -15,7 +15,6 @@ const createFilterItemTemplate = (value, isChecked, isDisabled) => `
 const createFiltersTemplate = (filters, currentFilter) => `
   <form class="trip-filters" action="#" method="get">
     ${filters.map((filter) => createFilterItemTemplate(filter, filter === currentFilter, false)).join('')}
-
     <button class="visually-hidden" type="submit">Accept filter</button>
   </form>
 `;
@@ -36,6 +35,10 @@ export default class TripFiltersView extends AbstractView {
 
   get template() {
     return createFiltersTemplate(this.#filters, this.#currentFilter);
+  }
+
+  destroy() {
+    remove(this);
   }
 
   removeElement() {

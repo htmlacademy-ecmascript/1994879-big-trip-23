@@ -36,7 +36,7 @@ export default class TripApiService extends ApiService {
   );
 
   #getRoutePointId = ({ id }) => `${ApiRoute.POINTS}/${id}`;
-  #getHeader = () => new Headers({'Content-Type': 'application/json'})
+  #getHeader = () => new Headers({'Content-Type': 'application/json'});
 
   static adaptToServer = (tripEvent) => JSON.stringify(toSnakeCaseKeys(tripEvent));
 

@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
 import { displayDate, displayDateMonth, displayTime, displayDateTime, displayDuration } from '../utils/date';
 import { isEmpty } from '../utils/common';
-import { render } from '../framework/render';
+import { render, remove } from '../framework/render';
 
 const createEventScheduleTemplate = (dateFrom, dateTo) => `
   <div class="event__schedule">
@@ -90,6 +90,10 @@ export default class TripEventView extends AbstractView {
 
   get template() {
     return createTripEventTemplate(this.#tripEvent, this.#offers, this.#destinations);
+  }
+
+  destroy() {
+    remove(this);
   }
 
   removeElement() {

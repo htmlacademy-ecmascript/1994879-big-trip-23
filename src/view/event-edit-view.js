@@ -1,6 +1,7 @@
 import { BLANK_TRIP_EVENT, EVENT_TYPES, DateFormats, ButtonTypes, DefaultFlatpickrConfig } from '../const';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { displayDateTime } from '../utils/date';
+import { remove } from '../framework/render';
 import { firstLetterUpperCase, getIsCheckedAttr, getIsDisabledAttr, getInteger, addItem, removeItem } from '../utils/common';
 import he from 'he';
 import flatpickr from 'flatpickr';
@@ -190,6 +191,10 @@ export default class EventEditView extends AbstractStatefulView {
 
   reset(tripEvent) {
     this.updateElement(tripEvent);
+  }
+
+  destroy() {
+    remove(this);
   }
 
   removeElement() {

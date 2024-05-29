@@ -1,6 +1,7 @@
 import TripPresenter from './presenter/trip-presenter';
-import HeaderPresenter from './presenter/header-presenter';
+import FilterPresenter from './presenter/filter-presenter';
 import TripEventModel from './model/trip-event-model';
+//import TripInfoPresenter from './presenter/trip-info-presenter';
 
 const start = async () => {
   const eventsElement = document.querySelector('.trip-events');
@@ -9,22 +10,9 @@ const start = async () => {
 
   const tripEventModel = new TripEventModel();
   await tripEventModel.init();
-
-  new HeaderPresenter(
-    {
-      container: {
-        filter: filtersElement,
-        info: headerMainElement
-      },
-      model: tripEventModel
-    }
-  );
-  new TripPresenter(
-    {
-      container: eventsElement,
-      model: tripEventModel
-    }
-  );
+  //new TripInfoPresenter({ container: headerMainElement, model: tripEventModel });
+  new FilterPresenter({ container: filtersElement, model: tripEventModel });
+  new TripPresenter({ container: eventsElement, model: tripEventModel });
 };
 
 start();

@@ -40,6 +40,10 @@ export default class TripEventModel extends Observable {
     return this.#currentSort;
   }
 
+  set currentSort(sortType) {
+    this.#currentSort = sortType;
+  }
+
   get tripInfo() {
     const trip = this.#getSortedTripEvents(this.#tripEvents, DEFAULT_SORT_TYPE);
     const first = trip[trip.length - 1];
@@ -61,6 +65,7 @@ export default class TripEventModel extends Observable {
       this.#destinations = await this.#tripApiService.getDestinations();
       this.#offers = await this.#tripApiService.getOffers();
       this.#tripEvents = (await this.#tripApiService.getPoints()).map(TripApiService.adaptToClient);
+      this._notify(UpdateType.MAJOR);
     } catch(error) {
       this._notify(UpdateType.ERROR);
       this.#destinations = [];
@@ -70,14 +75,6 @@ export default class TripEventModel extends Observable {
 
     this.#filters = Object.values(Filters);
     this._notify(UpdateType.MAJOR);
-  }
-
-  setCurrentSort(updateType, sortType) {
-    if (sortType === this.#currentSort) {
-      return;
-    }
-    this.#currentSort = sortType;
-    this._notify(updateType, sortType);
   }
 
   setCurrentFilter(updateType, filterType) {
@@ -95,7 +92,7 @@ export default class TripEventModel extends Observable {
       this._notify(updateType, newTripEvent);
     } catch(error) {
       throw new Error(error);
-    };
+    }
   }
 
   async updateTripEvent(updateType, tripEvent) {
@@ -110,7 +107,7 @@ export default class TripEventModel extends Observable {
       this._notify(updateType, tripEvent);
     } catch(error) {
       throw new Error(error);
-    };
+    }
   }
 
   async deleteTripEvent(updateType, tripEvent) {
@@ -122,7 +119,7 @@ export default class TripEventModel extends Observable {
       await this.#tripApiService.deletePoint(tripEvent);
     } catch(error) {
       throw new Error(error);
-    };
+    }
 
     this.#tripEvents = removeItem(this.#tripEvents, selectedTripEvent);
     this._notify(updateType);

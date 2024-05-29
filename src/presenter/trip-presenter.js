@@ -3,7 +3,7 @@ import TripSortView from '../view/trip-sort-view';
 import TripEventsView from '../view/trip-events-view';
 import TripEmptyView from '../view/trip-empty-view';
 import EventPresenter from './event-presenter';
-import { UserAction, UpdateType } from '../const';
+import { UserAction, UpdateType, DEFAULT_SORT_TYPE } from '../const';
 
 export default class TripPresenter {
   #model = null;
@@ -17,7 +17,7 @@ export default class TripPresenter {
     this.#container = container;
     this.#model = model;
     this.#model.addObserver(this.#onModelChange);
-    this.#onModelChange(UpdateType.MAJOR);
+    this.#renderTripEvents();
   }
 
   get tripEvents() {
@@ -29,10 +29,6 @@ export default class TripPresenter {
   }
 
   #renderSortView() {
-    if (this.#tripSortView) {
-      return;
-    }
-
     this.#tripSortView = new TripSortView({
       currentSort: this.#model.currentSort,
       container: this.#container,
@@ -68,18 +64,26 @@ export default class TripPresenter {
     this.#renderTripEventsView(tripEvents);
   }
 
-  #clearTripEvents() {
+  #clearTripEvents({resetSortType = false} = {}) {
     this.#eventPresenters.forEach((eventPresenter) => eventPresenter.destroy());
     this.#eventPresenters.clear();
+    if (this.#tripSortView) {
+      this.#tripSortView.destroy();
+    }
     if (this.#tripEmptyView) {
       this.#tripEmptyView.destroy();
+    }
+    if (resetSortType) {
+      this.#model.currentSort = DEFAULT_SORT_TYPE;
     }
   }
 
   #onTripEventModeChange = () => this.#eventPresenters.forEach((presenter) => presenter.resetView());
 
-  #onSortTypeChange = (newSort) =>
-    this.#onTripEventChange(UserAction.SORT, UpdateType.MINOR, newSort);
+  #onSortTypeChange = (sortType) => {
+    this.#model.currentSort = sortType;
+    this.#onModelChange(UpdateType.MINOR);
+  };
 
   #onTripEventChange = (actionType, updateType, data) => {
     switch (actionType) {
@@ -92,10 +96,6 @@ export default class TripPresenter {
       case UserAction.DELETE:
         this.#model.deleteTripEvent(updateType, data);
         break;
-      case UserAction.SORT:
-        this.#model.setCurrentSort(updateType, data);
-        break;
-
     }
   };
 
@@ -109,7 +109,7 @@ export default class TripPresenter {
         this.#renderTripEvents();
         break;
       case UpdateType.MAJOR:
-        this.#clearTripEvents();
+        this.#clearTripEvents({resetSortType: true});
         this.#renderTripEvents();
         break;
     }
