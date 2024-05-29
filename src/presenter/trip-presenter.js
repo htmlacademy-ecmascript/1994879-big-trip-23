@@ -4,7 +4,7 @@ import TripEventsView from '../view/trip-events-view';
 import TripEmptyView from '../view/trip-empty-view';
 import EventPresenter from './event-presenter';
 import NewEventPresenter from './new-event-presenter';
-import { UserAction, UpdateType, DEFAULT_SORT_TYPE, DEFAULT_FILTER, BLANK_TRIP_EVENT } from '../const';
+import { UserAction, UpdateType, DEFAULT_SORT_TYPE, DEFAULT_FILTER } from '../const';
 
 export default class TripPresenter {
   #model = null;
@@ -89,7 +89,7 @@ export default class TripPresenter {
     }
   }
 
-  #setAddButtonDisabled = (disabled) => this.#addButton.disabled = disabled;
+  #setAddButtonDisabled = (disabled) => (this.#addButton.disabled = disabled);
 
   #onTripEventModeChange = () => {
     this.#newEventPresenter.destroy();
@@ -101,7 +101,7 @@ export default class TripPresenter {
     this.#onModelChange(UpdateType.MINOR);
   };
 
-  #onAddButtonClick = (evt) => {
+  #onAddButtonClick = () => {
     this.#onTripEventModeChange();
     this.#model.currentSort = DEFAULT_SORT_TYPE;
     this.#model.setCurrentFilter(UpdateType.MAJOR, DEFAULT_FILTER);
