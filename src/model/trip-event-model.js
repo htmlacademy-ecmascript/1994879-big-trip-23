@@ -36,14 +36,6 @@ export default class TripEventModel extends Observable {
     return this.#currentFilter;
   }
 
-  set currentFilter(filter) {
-    if (filter === this.#currentFilter) {
-      return;
-    }
-    this.#currentFilter = filter;
-    this._notify();
-  }
-
   get currentSort() {
     return this.#currentSort;
   }
@@ -70,6 +62,7 @@ export default class TripEventModel extends Observable {
       this.#offers = await this.#tripApiService.getOffers();
       this.#tripEvents = (await this.#tripApiService.getPoints()).map(TripApiService.adaptToClient);
     } catch(error) {
+      this._notify(UpdateType.ERROR);
       this.#destinations = [];
       this.#offers = [];
       this.#tripEvents = [];
@@ -87,40 +80,50 @@ export default class TripEventModel extends Observable {
     this._notify(updateType, sortType);
   }
 
-  addTripEvent(updateType, tripEvent) {
-    // try {
-    //   this.#tripApiService.addPoint(tripEvent);
-    // } catch(error) {
-    //   throw new Error(error);
-    // };
-    this.#tripEvents.push(tripEvent);
-    this._notify(updateType, tripEvent);
+  setCurrentFilter(updateType, filterType) {
+    if (filterType === this.#currentFilter) {
+      return;
+    }
+    this.#currentFilter = filterType;
+    this._notify(updateType, filterType);
   }
 
-  updateTripEvent(updateType, tripEvent) {
-    // try {
-    //   this.#tripApiService.updatePoint(tripEvent);
-    // } catch(error) {
-    //   throw new Error(error);
-    // };
+  async addTripEvent(updateType, tripEvent) {
+    try {
+      const newTripEvent = await this.#tripApiService.addPoint(tripEvent);
+      this.#tripEvents.push(newTripEvent);
+      this._notify(updateType, newTripEvent);
+    } catch(error) {
+      throw new Error(error);
+    };
+  }
+
+  async updateTripEvent(updateType, tripEvent) {
     const selectedTripEvent = this.#findTripEvent(tripEvent.id);
     if (!selectedTripEvent) {
       throw new Error(`Can't update trip event ${tripEvent.id}`);
     }
-    Object.assign(selectedTripEvent, tripEvent);
-    this._notify(updateType, tripEvent);
+
+    try {
+      const updatedTripEvent = await this.#tripApiService.updatePoint(tripEvent);
+      Object.assign(selectedTripEvent, updatedTripEvent);
+      this._notify(updateType, tripEvent);
+    } catch(error) {
+      throw new Error(error);
+    };
   }
 
-  deleteTripEvent(updateType, tripEvent) {
-    // try {
-    //   this.#tripApiService.deletePoint(tripEvent);
-    // } catch(error) {
-    //   throw new Error(error);
-    // };
+  async deleteTripEvent(updateType, tripEvent) {
     const selectedTripEvent = this.#findTripEvent(tripEvent.id);
     if (!selectedTripEvent) {
       throw new Error(`Can't delete trip event ${tripEvent.id}`);
     }
+    try {
+      await this.#tripApiService.deletePoint(tripEvent);
+    } catch(error) {
+      throw new Error(error);
+    };
+
     this.#tripEvents = removeItem(this.#tripEvents, selectedTripEvent);
     this._notify(updateType);
   }

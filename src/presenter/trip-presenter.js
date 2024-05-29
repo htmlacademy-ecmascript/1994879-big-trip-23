@@ -79,11 +79,7 @@ export default class TripPresenter {
   #onTripEventModeChange = () => this.#eventPresenters.forEach((presenter) => presenter.resetView());
 
   #onSortTypeChange = (newSort) =>
-    this.#onTripEventChange(
-      UserAction.SORT,
-      UpdateType.MINOR,
-      newSort
-    );
+    this.#onTripEventChange(UserAction.SORT, UpdateType.MINOR, newSort);
 
   #onTripEventChange = (actionType, updateType, data) => {
     switch (actionType) {

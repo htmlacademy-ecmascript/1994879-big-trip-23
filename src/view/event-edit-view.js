@@ -227,12 +227,12 @@ export default class EventEditView extends AbstractStatefulView {
 
   #onFormSubmit = (evt) => {
     evt.preventDefault();
-    this.#submitHandler(this._state);
+    this.#submitHandler(EventEditView.parseStateToEvent(this._state));
   };
 
   #onDeleteForm = (evt) => {
     evt.preventDefault();
-    this.#deleteHandler(this._state);
+    this.#deleteHandler(EventEditView.parseStateToEvent(this._state));
   };
 
   #onCancelForm = (evt) => {

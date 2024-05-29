@@ -12,7 +12,7 @@ export default class TripApiService extends ApiService {
       url: ApiRoute.POINTS,
       method: ApiMethod.POST,
       body: TripApiService.adaptToServer(point),
-      headers: new Headers({'Content-Type': 'application/json'})
+      headers: this.#getHeader()
     })
   );
 
@@ -21,7 +21,7 @@ export default class TripApiService extends ApiService {
       url: this.#getRoutePointId(point),
       method: ApiMethod.PUT,
       body: TripApiService.adaptToServer(point),
-      headers: new Headers({'Content-Type': 'application/json'})
+      headers: this.#getHeader()
     })
   );
 
@@ -36,8 +36,9 @@ export default class TripApiService extends ApiService {
   );
 
   #getRoutePointId = ({ id }) => `${ApiRoute.POINTS}/${id}`;
+  #getHeader = () => new Headers({'Content-Type': 'application/json'})
 
-  static adaptToServer = (tripEvent) => toSnakeCaseKeys(tripEvent);
+  static adaptToServer = (tripEvent) => JSON.stringify(toSnakeCaseKeys(tripEvent));
 
   static adaptToClient = (point) => {
     const { dateFrom, dateTo, ...rest } = toCamelCaseKeys(point);
