@@ -46,8 +46,8 @@ export default class TripEventModel extends Observable {
 
   get tripInfo() {
     const trip = this.#getSortedTripEvents(this.#tripEvents, DEFAULT_SORT_TYPE);
-    const first = trip[trip.length - 1];
-    const last = trip[0];
+    const first = trip[0];
+    const last = trip[trip.length - 1];
     const middle = trip.slice(1, -1);
     const middleDestination = middle.length === 1 ? this.#getDestinationName(middle[0].destination) : '...';
     return {

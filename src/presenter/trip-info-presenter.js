@@ -1,16 +1,15 @@
+import { UpdateType } from '../const';
 import TripInfoView from '../view/trip-info-view';
 
 export default class TripInfoPresenter {
   #model = null;
   #container = null;
-  #infoContainer = null;
-  #tripFiltersView = null;
+  #tripInfoView = null;
 
   constructor ({ container, model }) {
     this.#container = container;
     this.#model = model;
 
-    this.init();
     this.#model.addObserver(this.#onModelChange);
   }
 
@@ -19,8 +18,16 @@ export default class TripInfoPresenter {
   }
 
   #renderSummary({ tripInfo }) {
-    new TripInfoView({ tripInfo, container: this.#infoContainer });
+    this.#tripInfoView = new TripInfoView({ tripInfo, container: this.#container });
   }
 
-  #onModelChange = () => this.init();
+  #onModelChange = (updateType) => {
+    if (updateType !== UpdateType.MAJOR) {
+      return;
+    }
+    if (this.#tripInfoView) {
+      this.#tripInfoView.destroy();
+    }
+    this.init();
+  };
 }

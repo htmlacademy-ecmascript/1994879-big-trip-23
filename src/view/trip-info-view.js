@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import { render, RenderPosition } from '../framework/render';
+import { render, remove, RenderPosition } from '../framework/render';
 import { displayDateTime } from '../utils/date';
 import { DateFormats } from '../const';
 
@@ -29,5 +29,9 @@ export default class TripInfoView extends AbstractView {
 
   get template() {
     return createTripInfoTemplate(this.#tripInfo);
+  }
+
+  destroy() {
+    remove(this);
   }
 }
