@@ -31,7 +31,7 @@ const getTypesTemplate = (type) => `
   </div>
 `;
 
-const getEventDestination = (type, destinationName, destinations) => `
+const getEventDestination = (type, { name: destinationName = '' } = {}, destinations) => `
   <div class="event__field-group  event__field-group--destination">
     <label class="event__label  event__type-output" for="event-destination-1">
       ${type}
@@ -40,8 +40,8 @@ const getEventDestination = (type, destinationName, destinations) => `
     <datalist id="destination-list-1">
       ${destinations.map((destination) => `<option value="${he.encode(destination.name)}"></option>`).join('')}
     </datalist>
-  </div>
-`;
+  </div>`;
+
 
 const getTimePeriodTemplate = (dateFrom, dateTo) => `
   <div class="event__field-group  event__field-group--time">
@@ -108,12 +108,18 @@ const createPhotoTapeTemplate = (pictures) => !pictures.length ? '' : `
     </div>
   </div>`;
 
-const getDestinationTemplate = ({ description, pictures }) => !description || !pictures.length ? '' : `
-  <section class="event__section  event__section--destination">
-    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">${description}</p>
-    ${createPhotoTapeTemplate(pictures)}
-  </section>`;
+const getDestinationTemplate = (destination) => {
+  if (!destination) {
+    return '';
+  }
+  const { description, pictures } = destination;
+  return !description || !pictures.length ? '' : `
+    <section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      <p class="event__destination-description">${description}</p>
+      ${createPhotoTapeTemplate(pictures)}
+    </section>`;
+};
 
 const createEventEditTemplate = (tripEvent, offers, destinations) => {
   const { type, dateFrom, dateTo, basePrice, isAdding, isSaving, isDeleting } = tripEvent;
@@ -129,7 +135,7 @@ const createEventEditTemplate = (tripEvent, offers, destinations) => {
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       ${getTypesTemplate(type)}
-      ${getEventDestination(type, eventDestination.name, destinations)}
+      ${getEventDestination(type, eventDestination, destinations)}
       ${getTimePeriodTemplate(dateFrom, dateTo)}
       ${getPriceTemplate(basePrice)}
       ${getButtonsTemplate(isAdding, isSaving, isDeleting)}
@@ -302,7 +308,7 @@ export default class EventEditView extends AbstractStatefulView {
 
   static parseEventToState = (tripEvent) => ({
     ...tripEvent,
-    isAdding: tripEvent === null,
+    isAdding: !tripEvent.id,
     isSaving: false,
     isDeleting: false,
   });

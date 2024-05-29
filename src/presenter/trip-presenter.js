@@ -3,6 +3,7 @@ import TripSortView from '../view/trip-sort-view';
 import TripEventsView from '../view/trip-events-view';
 import TripEmptyView from '../view/trip-empty-view';
 import EventPresenter from './event-presenter';
+import NewEventPresenter from './new-event-presenter';
 import { UserAction, UpdateType, DEFAULT_SORT_TYPE, DEFAULT_FILTER, BLANK_TRIP_EVENT } from '../const';
 
 export default class TripPresenter {
@@ -12,6 +13,7 @@ export default class TripPresenter {
   #tripSortView = null;
   #tripEmptyView = null;
   #eventPresenters = new Map();
+  #newEventPresenter = null;
   #addButton = null;
 
   constructor({ container, model, addButton }) {
@@ -20,6 +22,14 @@ export default class TripPresenter {
     this.#model.addObserver(this.#onModelChange);
     this.#addButton = addButton;
     this.#addButton.addEventListener('click', this.#onAddButtonClick);
+
+    this.#tripEventsView = new TripEventsView({ container: this.#container });
+    this.#newEventPresenter = new NewEventPresenter({
+      model,
+      container: this.#tripEventsView.element,
+      onDataChange: this.#onTripEventChange,
+      onDestroy: this.#onNewEventClose
+    });
 
     this.#renderTripEvents();
   }
@@ -41,10 +51,6 @@ export default class TripPresenter {
   }
 
   #renderTripEventsView(tripEvents) {
-    if (!this.#tripEventsView) {
-      this.#tripEventsView = new TripEventsView({ container: this.#container });
-    }
-
     tripEvents.forEach((tripEvent) => {
       const eventPresenter = new EventPresenter({
         model: this.#model,
@@ -69,6 +75,7 @@ export default class TripPresenter {
   }
 
   #clearTripEvents({resetSortType = false} = {}) {
+    this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((eventPresenter) => eventPresenter.destroy());
     this.#eventPresenters.clear();
     if (this.#tripSortView) {
@@ -82,12 +89,27 @@ export default class TripPresenter {
     }
   }
 
-  #onTripEventModeChange = () => this.#eventPresenters.forEach((presenter) => presenter.resetView());
+  #setAddButtonDisabled = (disabled) => this.#addButton.disabled = disabled;
+
+  #onTripEventModeChange = () => {
+    this.#newEventPresenter.destroy();
+    this.#eventPresenters.forEach((presenter) => presenter.resetView());
+  };
 
   #onSortTypeChange = (sortType) => {
     this.#model.currentSort = sortType;
     this.#onModelChange(UpdateType.MINOR);
   };
+
+  #onAddButtonClick = (evt) => {
+    this.#onTripEventModeChange();
+    this.#model.currentSort = DEFAULT_SORT_TYPE;
+    this.#model.setCurrentFilter(UpdateType.MAJOR, DEFAULT_FILTER);
+    this.#newEventPresenter.init(this.#model);
+    this.#setAddButtonDisabled(true);
+  };
+
+  #onNewEventClose = () => this.#setAddButtonDisabled(false);
 
   #onTripEventChange = (actionType, updateType, data) => {
     switch (actionType) {
@@ -119,24 +141,5 @@ export default class TripPresenter {
         break;
     }
   };
-
-  #onAddButtonClick = (evt) => {
-    evt.preventDefault();
-    this.#model.currentSort = DEFAULT_SORT_TYPE;
-    this.#model.setCurrentFilter(UpdateType.MAJOR, DEFAULT_FILTER);
-    this.#addTripEvent();
-    this.#addButton.disabled = true;
-  };
-
-  #addTripEvent() {
-    const eventPresenter = new EventPresenter({
-      model: this.#model,
-      container: this.#tripEventsView.element,
-      onTripEventChange: this.#onTripEventChange,
-      onModeChange: this.#onTripEventModeChange,
-    });
-    eventPresenter.init(BLANK_TRIP_EVENT);
-    this.#eventPresenters.set(BLANK_TRIP_EVENT.id, eventPresenter);
-  }
 
 }

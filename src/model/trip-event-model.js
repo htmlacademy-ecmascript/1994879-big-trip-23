@@ -78,9 +78,6 @@ export default class TripEventModel extends Observable {
   }
 
   setCurrentFilter(updateType, filterType) {
-    if (filterType === this.#currentFilter) {
-      return;
-    }
     this.#currentFilter = filterType;
     this._notify(updateType, filterType);
   }

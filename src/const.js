@@ -1,13 +1,13 @@
-const DEFAULT_EVENT_TYPE = 'Flight';
+const ONE_MINUTE_IN_MS = 60000;
+const DEFAULT_EVENT_TYPE = 'flight';
 const DEFAULT_FILTER = 'everything';
 const DEFAULT_SORT_TYPE = 'day';
 
 const BLANK_TRIP_EVENT = {
-  id: null,
   type: DEFAULT_EVENT_TYPE,
   dateFrom: new Date(),
-  dateTo: null,
-  destination: null,
+  dateTo: new Date(Date.now() + ONE_MINUTE_IN_MS),
+  destination: '',
   basePrice: 0,
   offers: [],
   isFavorite: false,
