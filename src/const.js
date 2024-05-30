@@ -1,13 +1,13 @@
-const DEFAULT_EVENT_TYPE = 'Flight';
+const ONE_MINUTE_IN_MS = 60000;
+const DEFAULT_EVENT_TYPE = 'flight';
 const DEFAULT_FILTER = 'everything';
 const DEFAULT_SORT_TYPE = 'day';
 
 const BLANK_TRIP_EVENT = {
-  id: 0,
   type: DEFAULT_EVENT_TYPE,
   dateFrom: new Date(),
-  dateTo: null,
-  destination: null,
+  dateTo: new Date(Date.now() + ONE_MINUTE_IN_MS),
+  destination: '',
   basePrice: 0,
   offers: [],
   isFavorite: false,
@@ -30,8 +30,16 @@ const SortTypes = {
   EVENT: 'event',
   TIME: 'time',
   PRICE: 'price',
-  OFFERS: 'offers'
+  OFFER: 'offers'
 };
+
+const SortInputTypes = [
+  { type: SortTypes.DAY, sortable: true },
+  { type: SortTypes.EVENT, sortable: false },
+  { type: SortTypes.TIME, sortable: true },
+  { type: SortTypes.PRICE, sortable: true },
+  { type: SortTypes.OFFER, sortable: false },
+];
 
 const Filters = {
   EVERYTHING: 'everything',
@@ -55,9 +63,9 @@ const DateFormats = {
 
 const ButtonTypes = {
   SAVE: 'Save',
-  SAVING: 'Saving',
+  SAVING: 'Saving...',
   DELETE: 'Delete',
-  DELETING: 'Deleting',
+  DELETING: 'Deleting...',
   CANCEL: 'Cancel',
 };
 
@@ -66,14 +74,44 @@ const DefaultFlatpickrConfig = {
   enableTime: true,
 };
 
+const UserAction = {
+  ADD: 'ADD',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE',
+  SORT: 'SORT',
+  FILTER: 'FILTER',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+  ERROR: 'ERROR',
+};
+
+const FormMode = {
+  VIEW: 'View',
+  EDIT: 'Edit',
+};
+
+const Messages = {
+  LOADING: 'Loading...',
+  ERROR: 'Failed to load latest route information'
+};
+
 export {
   BLANK_TRIP_EVENT,
   EVENT_TYPES,
   DEFAULT_FILTER,
   DEFAULT_SORT_TYPE,
   SortTypes,
+  SortInputTypes,
   Filters,
   DateFormats,
   ButtonTypes,
-  DefaultFlatpickrConfig
+  DefaultFlatpickrConfig,
+  UserAction,
+  UpdateType,
+  FormMode,
+  Messages
 };

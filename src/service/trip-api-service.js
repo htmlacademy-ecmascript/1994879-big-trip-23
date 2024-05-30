@@ -7,23 +7,25 @@ export default class TripApiService extends ApiService {
     await this._load({ url: ApiRoute.POINTS, method: ApiMethod.GET })
   );
 
-  addPoint = async (point) => ApiService.parseResponse(
-    await this._load({
+  addPoint = async (point) => {
+    const response = await this._load({
       url: ApiRoute.POINTS,
       method: ApiMethod.POST,
       body: TripApiService.adaptToServer(point),
-      headers: new Headers({'Content-Type': 'application/json'})
-    })
-  );
+      headers: this.#getHeader()
+    });
+    return TripApiService.adaptToClient(await ApiService.parseResponse(response));
+  };
 
-  updatePoint = async (point) => ApiService.parseResponse(
-    await this._load({
+  updatePoint = async (point) => {
+    const response = await this._load({
       url: this.#getRoutePointId(point),
       method: ApiMethod.PUT,
       body: TripApiService.adaptToServer(point),
-      headers: new Headers({'Content-Type': 'application/json'})
-    })
-  );
+      headers: this.#getHeader()
+    });
+    return TripApiService.adaptToClient(await ApiService.parseResponse(response));
+  };
 
   deletePoint = async (point) => await this._load({ url: this.#getRoutePointId(point), method: ApiMethod.DELETE });
 
@@ -36,8 +38,9 @@ export default class TripApiService extends ApiService {
   );
 
   #getRoutePointId = ({ id }) => `${ApiRoute.POINTS}/${id}`;
+  #getHeader = () => new Headers({'Content-Type': 'application/json'});
 
-  static adaptToServer = (tripEvent) => toSnakeCaseKeys(tripEvent);
+  static adaptToServer = (tripEvent) => JSON.stringify(toSnakeCaseKeys(tripEvent));
 
   static adaptToClient = (point) => {
     const { dateFrom, dateTo, ...rest } = toCamelCaseKeys(point);

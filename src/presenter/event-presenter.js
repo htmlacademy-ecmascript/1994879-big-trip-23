@@ -1,11 +1,8 @@
 import EventEditView from '../view/event-edit-view';
 import TripEventView from '../view/trip-event-view';
-import { replace, remove } from '../framework/render';
-
-const Mode = {
-  VIEW: 'View',
-  EDIT: 'Edit',
-};
+import { replace } from '../framework/render';
+import { UserAction, UpdateType, FormMode } from '../const';
+import { isDatesEqual } from '../utils/date';
 
 export default class EventPresenter {
   #tripEvent = null;
@@ -15,7 +12,7 @@ export default class EventPresenter {
   #eventEditView = null;
   #tripEventChangeHandler = null;
   #changeModeHandler = null;
-  #mode = Mode.VIEW;
+  #mode = FormMode.VIEW;
 
   constructor({ model, container, onTripEventChange, onModeChange }) {
     this.#model = model;
@@ -24,20 +21,39 @@ export default class EventPresenter {
     this.#changeModeHandler = onModeChange;
   }
 
+  get mode() {
+    return this.#mode;
+  }
+
+  set mode(newMode) {
+    if (this.mode === newMode) {
+      return;
+    }
+
+    switch (newMode) {
+      case FormMode.VIEW:
+        this.#switchToViewMode();
+        break;
+      case FormMode.EDIT:
+        this.#switchToEditMode();
+        break;
+    }
+    this.#mode = newMode;
+  }
+
   init(tripEvent) {
     this.#tripEvent = tripEvent;
     this.#renderTripEvent(tripEvent);
   }
 
   destroy() {
-    remove(this.#tripEventView);
-    remove(this.#eventEditView);
+    this.#tripEventView.destroy();
+    this.#eventEditView.destroy();
+    this.#removeListeners();
   }
 
   resetView() {
-    if (this.#mode !== Mode.VIEW) {
-      this.#switchToViewMode();
-    }
+    this.mode = FormMode.VIEW;
   }
 
   #renderTripEvent(tripEvent) {
@@ -61,6 +77,7 @@ export default class EventPresenter {
       offers,
       destinations,
       onFormSubmit: this.#onFormSubmit,
+      onFormDelete: this.#onFormDelete,
       onFormCancel: this.#onFormCancel,
     });
 
@@ -68,52 +85,54 @@ export default class EventPresenter {
       return;
     }
 
-    if (this.#mode === Mode.EDIT) {
+    if (this.mode === FormMode.EDIT) {
       replace(this.#eventEditView, prevEventEditView);
     }
 
-    if (this.#mode === Mode.VIEW) {
+    if (this.mode === FormMode.VIEW) {
       this.#eventEditView.reset(tripEvent);
       replace(this.#tripEventView, prevTripEventView);
     }
 
-    remove(prevTripEventView);
-    remove(prevEventEditView);
+    prevTripEventView.destroy();
+    prevEventEditView.destroy();
   }
 
   #switchToEditMode() {
     replace(this.#eventEditView, this.#tripEventView);
-    document.addEventListener('keydown', this.#onEscKeydown);
-
+    this.#addListeners();
     this.#changeModeHandler();
-    this.#mode = Mode.EDIT;
   }
 
   #switchToViewMode() {
     this.#eventEditView.reset(this.#tripEvent);
     replace(this.#tripEventView, this.#eventEditView);
-    document.removeEventListener('keydown', this.#onEscKeydown);
-
-    this.#mode = Mode.VIEW;
+    this.#removeListeners();
   }
 
-  #onEditClick = () => this.#switchToEditMode();
-  #onFormCancel = () => this.#switchToViewMode();
+  #onEditClick = () => (this.mode = FormMode.EDIT);
+  #onFormCancel = () => (this.mode = FormMode.VIEW);
+  #addListeners = () => document.addEventListener('keydown', this.#onEscKeydown);
+  #removeListeners = () => document.removeEventListener('keydown', this.#onEscKeydown);
 
-  #onFormSubmit = (tripEvent) => {
-    this.#tripEventChangeHandler(tripEvent);
-    this.#switchToViewMode();
+  #onFormDelete = (tripEvent) => {
+    this.#tripEventChangeHandler(UserAction.DELETE, UpdateType.MINOR, tripEvent);
   };
 
-  #onFavoriteClick = () => this.#tripEventChangeHandler({
-    ...this.#tripEvent,
-    isFavorite: !this.#tripEvent.isFavorite,
-  });
+  #onFormSubmit = (tripEvent) => {
+    const isMinorUpdate = !isDatesEqual(this.#tripEvent.dateFrom, tripEvent.dateFrom) ||
+      !isDatesEqual(this.#tripEvent.dateTo, tripEvent.dateTo) ;
+    this.#tripEventChangeHandler(UserAction.UPDATE, isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH, tripEvent);
+  };
+
+  #onFavoriteClick = () => this.#tripEventChangeHandler(UserAction.UPDATE, UpdateType.PATCH,
+    { ...this.#tripEvent, isFavorite: !this.#tripEvent.isFavorite }
+  );
 
   #onEscKeydown = (evt) => {
     if (evt.key === 'Escape') {
       evt.stopPropagation();
-      this.#switchToViewMode();
+      this.mode = FormMode.VIEW;
     }
   };
 }
