@@ -1,20 +1,23 @@
+
 import { isEmpty } from '../utils/common';
 import TripSortView from '../view/trip-sort-view';
 import TripEventsView from '../view/trip-events-view';
-import TripEmptyView from '../view/trip-empty-view';
+import TripMessageView from '../view/trip-message-view';
 import EventPresenter from './event-presenter';
 import NewEventPresenter from './new-event-presenter';
-import { UserAction, UpdateType, DEFAULT_SORT_TYPE, DEFAULT_FILTER } from '../const';
+import { UserAction, UpdateType, Messages, DEFAULT_SORT_TYPE, DEFAULT_FILTER } from '../const';
+import { TripEmptyMessages } from '../utils/filter';
 
 export default class TripPresenter {
   #model = null;
   #container = null;
   #tripEventsView = null;
   #tripSortView = null;
-  #tripEmptyView = null;
+  #tripMessageView = null;
   #eventPresenters = new Map();
   #newEventPresenter = null;
   #addButton = null;
+  #isLoading = true;
 
   constructor({ container, model, addButton }) {
     this.#container = container;
@@ -38,19 +41,21 @@ export default class TripPresenter {
     return this.#model.tripEvents;
   }
 
-  #renderEmptyView() {
-    this.#tripEmptyView = new TripEmptyView({ filter: this.#model.currentFilter, container: this.#container });
-  }
+  #renderEmptyView = () =>
+    this.#tripMessageView = new TripMessageView({ message: TripEmptyMessages[this.#model.currentFilter], container: this.#container });
 
-  #renderSortView() {
+  #renderLoadingView = () =>
+    this.#tripMessageView = new TripMessageView({ message: Messages.LOADING, container: this.#container });
+
+  #renderSortView = () => {
     this.#tripSortView = new TripSortView({
       currentSort: this.#model.currentSort,
       container: this.#container,
       onSortTypeChange: this.#onSortTypeChange,
     });
-  }
+  };
 
-  #renderTripEventsView(tripEvents) {
+  #renderTripEventsView = (tripEvents) => {
     tripEvents.forEach((tripEvent) => {
       const eventPresenter = new EventPresenter({
         model: this.#model,
@@ -61,9 +66,15 @@ export default class TripPresenter {
       eventPresenter.init(tripEvent);
       this.#eventPresenters.set(tripEvent.id, eventPresenter);
     });
-  }
+  };
 
-  #renderTripEvents() {
+  #renderTripEvents = () => {
+    if (this.#isLoading) {
+      this.#setAddButtonDisabled(this.#isLoading);
+      this.#renderLoadingView();
+      return;
+    }
+
     const tripEvents = this.tripEvents;
     if (isEmpty(tripEvents)) {
       this.#renderEmptyView();
@@ -72,22 +83,22 @@ export default class TripPresenter {
 
     this.#renderSortView();
     this.#renderTripEventsView(tripEvents);
-  }
+  };
 
-  #clearTripEvents({resetSortType = false} = {}) {
+  #clearTripEvents = ({resetSortType = false} = {}) => {
     this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((eventPresenter) => eventPresenter.destroy());
     this.#eventPresenters.clear();
     if (this.#tripSortView) {
       this.#tripSortView.destroy();
     }
-    if (this.#tripEmptyView) {
-      this.#tripEmptyView.destroy();
+    if (this.#tripMessageView) {
+      this.#tripMessageView.destroy();
     }
     if (resetSortType) {
       this.#model.currentSort = DEFAULT_SORT_TYPE;
     }
-  }
+  };
 
   #setAddButtonDisabled = (disabled) => (this.#addButton.disabled = disabled);
 
@@ -139,6 +150,12 @@ export default class TripPresenter {
         this.#clearTripEvents({resetSortType: true});
         this.#renderTripEvents();
         break;
+        case UpdateType.INIT:
+          this.#isLoading = false;
+          this.#setAddButtonDisabled(this.#isLoading);
+          this.#tripMessageView.destroy();
+          this.#renderTripEvents();
+          break;
     }
   };
 
