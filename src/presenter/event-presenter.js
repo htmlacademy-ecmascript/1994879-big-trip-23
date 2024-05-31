@@ -110,8 +110,14 @@ export default class EventPresenter {
     this.#removeListeners();
   }
 
-  #onEditClick = () => (this.mode = FormMode.EDIT);
-  #onFormCancel = () => (this.mode = FormMode.VIEW);
+  #onEditClick = () => {
+    this.mode = FormMode.EDIT;
+  };
+
+  #onFormCancel = () => {
+    this.mode = FormMode.VIEW;
+  };
+
   #addListeners = () => document.addEventListener('keydown', this.#onEscKeydown);
   #removeListeners = () => document.removeEventListener('keydown', this.#onEscKeydown);
 

@@ -41,11 +41,13 @@ export default class TripPresenter {
     return this.#model.tripEvents;
   }
 
-  #renderEmptyView = () => (
-    this.#tripMessageView = new TripMessageView({ message: TripEmptyMessages[this.#model.currentFilter], container: this.#container }));
+  #renderEmptyView = () => {
+    this.#tripMessageView = new TripMessageView({ message: TripEmptyMessages[this.#model.currentFilter], container: this.#container });
+  };
 
-  #renderLoadingView = () => (
-    this.#tripMessageView = new TripMessageView({ message: Messages.LOADING, container: this.#container }));
+  #renderLoadingView = () => {
+    this.#tripMessageView = new TripMessageView({ message: Messages.LOADING, container: this.#container });
+  };
 
   #renderSortView = () => {
     this.#tripSortView = new TripSortView({
@@ -85,7 +87,7 @@ export default class TripPresenter {
     this.#renderTripEventsView(tripEvents);
   };
 
-  #clearTripEvents = ({resetSortType = false} = {}) => {
+  #clearTripEvents = (resetSortType = false) => {
     this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((eventPresenter) => eventPresenter.destroy());
     this.#eventPresenters.clear();
@@ -147,7 +149,7 @@ export default class TripPresenter {
         this.#renderTripEvents();
         break;
       case UpdateType.MAJOR:
-        this.#clearTripEvents({resetSortType: true});
+        this.#clearTripEvents(true);
         this.#renderTripEvents();
         break;
       case UpdateType.INIT:
