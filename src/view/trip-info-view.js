@@ -31,7 +31,5 @@ export default class TripInfoView extends AbstractView {
     return createTripInfoTemplate(this.#tripInfo);
   }
 
-  destroy() {
-    remove(this);
-  }
+  destroy = () => remove(this);
 }

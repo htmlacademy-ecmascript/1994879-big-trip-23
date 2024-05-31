@@ -65,7 +65,6 @@ export default class TripEventModel extends Observable {
       this.#destinations = await this.#tripApiService.getDestinations();
       this.#offers = await this.#tripApiService.getOffers();
       this.#tripEvents = (await this.#tripApiService.getPoints()).map(TripApiService.adaptToClient);
-      this._notify(UpdateType.MAJOR);
     } catch(error) {
       this._notify(UpdateType.ERROR);
       this.#destinations = [];
@@ -74,7 +73,7 @@ export default class TripEventModel extends Observable {
     }
 
     this.#filters = Object.values(Filters);
-    this._notify(UpdateType.MAJOR);
+    this._notify(UpdateType.INIT);
   }
 
   setCurrentFilter(updateType, filterType) {
