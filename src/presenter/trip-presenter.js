@@ -156,6 +156,7 @@ export default class TripPresenter {
         this.#tripMessageView.destroy();
         this.#renderTripEvents();
         break;
+
     }
   };
 
