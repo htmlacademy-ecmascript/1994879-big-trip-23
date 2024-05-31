@@ -1,5 +1,5 @@
-import EventEditView from '../view/event-edit-view';
-import TripEventView from '../view/trip-event-view';
+import EventEditView from '../view/event-edit/event-edit-view';
+import TripEventView from '../view/event-view/trip-event-view';
 import { replace } from '../framework/render';
 import { UserAction, UpdateType, FormMode } from '../const';
 import { isDatesEqual } from '../utils/date';

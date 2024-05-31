@@ -78,11 +78,10 @@ const UserAction = {
   ADD: 'ADD',
   UPDATE: 'UPDATE',
   DELETE: 'DELETE',
-  SORT: 'SORT',
-  FILTER: 'FILTER',
 };
 
 const UpdateType = {
+  INIT: 'INIT',
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',

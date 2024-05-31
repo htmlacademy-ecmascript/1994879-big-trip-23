@@ -1,8 +1,8 @@
 import { render, RenderPosition } from '../framework/render.js';
-import EventEditView from '../view/event-edit-view.js';
+import EventEditView from '../view/event-edit/event-edit-view.js';
 import { UserAction, UpdateType } from '../const.js';
 
-export default class NewTaskPresenter {
+export default class NewEventPresenter {
   #container = null;
   #eventEditView = null;
   #tripEventChangeHandler = null;

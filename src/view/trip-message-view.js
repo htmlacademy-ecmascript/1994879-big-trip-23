@@ -1,9 +1,9 @@
 import AbstractView from '../framework/view/abstract-view';
 import { render, remove } from '../framework/render';
 
-const createLoadingTemplate = (message) => `<p class="trip-events__msg">${message}</p>`;
+const getTemplate = (message) => `<p class="trip-events__msg">${message}</p>`;
 
-export default class LoadingView extends AbstractView {
+export default class TripMessageView extends AbstractView {
   #message = '';
 
   constructor ({ container, message }) {
@@ -13,10 +13,8 @@ export default class LoadingView extends AbstractView {
   }
 
   get template() {
-    return createLoadingTemplate(this.#message);
+    return getTemplate(this.#message);
   }
 
-  destroy() {
-    remove(this);
-  }
+  destroy = () => remove(this);
 }

@@ -1,11 +1,8 @@
-import AbstractView from '../framework/view/abstract-view';
-import { displayDate, displayDateMonth, displayTime, displayDateTime, displayDuration } from '../utils/date';
-import { isEmpty } from '../utils/common';
-import { render, remove } from '../framework/render';
+import { displayDate, displayDateMonth, displayTime, displayDateTime, displayDuration } from '../../utils/date';
+import { isEmpty } from '../../utils/common';
 import he from 'he';
-import { BLANK_TRIP_EVENT } from '../const';
 
-const createEventScheduleTemplate = (dateFrom, dateTo) => `
+const getEventScheduleTemplate = (dateFrom, dateTo) => `
   <div class="event__schedule">
   <p class="event__time">
     <time class="event__start-time" datetime="${displayDateTime(dateFrom)}">${displayTime(dateFrom)}</time>
@@ -16,7 +13,7 @@ const createEventScheduleTemplate = (dateFrom, dateTo) => `
 </div>
 `;
 
-const createOffersTemplate = (offers) => isEmpty(offers) ? '' :
+const getOffersTemplate = (offers) => isEmpty(offers) ? '' :
   offers.map(({ title, price }) => `
     <li class="event__offer">
       <span class="event__offer-title">${he.encode(title)}</span>
@@ -25,7 +22,7 @@ const createOffersTemplate = (offers) => isEmpty(offers) ? '' :
     </li>
     `).join('');
 
-const createTripEventTemplate = (tripEvent, offers, destinations) => {
+const getTripEventTemplate = (tripEvent, offers, destinations) => {
   const {type, dateFrom, dateTo, basePrice, isFavorite} = tripEvent;
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
   const {name: destinationName} = destinations.find((destination) => destination.id === tripEvent.destination);
@@ -40,13 +37,13 @@ const createTripEventTemplate = (tripEvent, offers, destinations) => {
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
       <h3 class="event__title">${type} ${he.encode(destinationName)}</h3>
-      ${createEventScheduleTemplate(dateFrom, dateTo)}
+      ${getEventScheduleTemplate(dateFrom, dateTo)}
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        ${createOffersTemplate(selectedOffers)}
+        ${getOffersTemplate(selectedOffers)}
       </ul>
       <button class="event__favorite-btn ${favoriteClassName}" type="button">
         <span class="visually-hidden">Add to favorite</span>
@@ -61,51 +58,4 @@ const createTripEventTemplate = (tripEvent, offers, destinations) => {
   </li>`;
 };
 
-export default class TripEventView extends AbstractView {
-  #tripEvent = null;
-  #offers = null;
-  #destinations = null;
-  #editClickHandler = null;
-  #favoriteClickHandler = null;
-  #rollupButtonElement = null;
-  #favoriteButtonElement = null;
-
-  constructor({tripEvent = BLANK_TRIP_EVENT, offers, destinations, container, onEditClick, onFavoriteClick}) {
-    super();
-    this.#tripEvent = tripEvent;
-    this.#offers = offers;
-    this.#destinations = destinations;
-    this.#editClickHandler = onEditClick;
-    this.#favoriteClickHandler = onFavoriteClick;
-    this.#rollupButtonElement = this.element.querySelector('.event__rollup-btn');
-    this.#favoriteButtonElement = this.element.querySelector('.event__favorite-btn');
-
-    this.#rollupButtonElement.addEventListener('click', this.#onClick);
-    this.#favoriteButtonElement.addEventListener('click', this.#onFavoriteClick);
-    render(this, container);
-  }
-
-  get template() {
-    return createTripEventTemplate(this.#tripEvent, this.#offers, this.#destinations);
-  }
-
-  destroy() {
-    remove(this);
-  }
-
-  removeElement() {
-    super.removeElement();
-    this.#rollupButtonElement.removeEventListener('click', this.#onClick);
-    this.#favoriteButtonElement.removeEventListener('click', this.#onFavoriteClick);
-  }
-
-  #onClick = (evt) => {
-    evt.preventDefault();
-    this.#editClickHandler();
-  };
-
-  #onFavoriteClick = (evt) => {
-    evt.preventDefault();
-    this.#favoriteClickHandler();
-  };
-}
+export { getTripEventTemplate };
