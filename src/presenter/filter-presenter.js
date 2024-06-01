@@ -1,6 +1,8 @@
 import TripFiltersView from '../view/trip-filters-view';
 import { replace } from '../framework/render';
 import { UpdateType } from '../const';
+import { getFiltered } from '../model/utils/filter';
+import { isEmpty } from '../utils/common';
 
 export default class FilterPresenter {
   #model = null;
@@ -10,19 +12,23 @@ export default class FilterPresenter {
   constructor ({ container, model }) {
     this.#container = container;
     this.#model = model;
-    this.init();
+    //this.init();
     this.#model.addObserver(this.#onModelChange);
   }
 
-  init() {
-    this.#renderFilters(this.#model);
+  get filters() {
+    const { filters, tripEvents } = this.#model;
+    return filters.map((type) => ({
+      type,
+      disabled: isEmpty(getFiltered(tripEvents, type))
+    }));
   }
 
-  #renderFilters({ filters, currentFilter }) {
+  #renderFilters = ({ currentFilter }) => {
     const prevTripFiltersView = this.#tripFiltersView;
 
     this.#tripFiltersView = new TripFiltersView({
-      filters,
+      filters: this.filters,
       currentFilter,
       container: this.#container,
       onFilterChange: this.#onFilterChange
@@ -34,11 +40,11 @@ export default class FilterPresenter {
 
     replace(this.#tripFiltersView, prevTripFiltersView);
     prevTripFiltersView.destroy();
-  }
+  };
 
   #onFilterChange = (filterType) => {
     this.#model.setCurrentFilter(UpdateType.MAJOR, filterType);
   };
 
-  #onModelChange = () => this.init();
+  #onModelChange = () => this.#renderFilters(this.#model);
 }

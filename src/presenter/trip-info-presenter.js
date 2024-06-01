@@ -1,4 +1,3 @@
-import { UpdateType } from '../const';
 import TripInfoView from '../view/trip-info-view';
 
 export default class TripInfoPresenter {
@@ -21,10 +20,7 @@ export default class TripInfoPresenter {
     this.#tripInfoView = new TripInfoView({ tripInfo, container: this.#container });
   }
 
-  #onModelChange = (updateType) => {
-    if (updateType !== UpdateType.MAJOR) {
-      return;
-    }
+  #onModelChange = () => {
     if (this.#tripInfoView) {
       this.#tripInfoView.destroy();
     }

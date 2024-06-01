@@ -75,7 +75,7 @@ export default class TripEventModel extends Observable {
       this.#tripEvents.push(newTripEvent);
       this._notify(updateType, newTripEvent);
     } catch(error) {
-      throw error;
+      throw new Error(`Add error: ${error.message}`);
     }
   };
 
@@ -90,7 +90,7 @@ export default class TripEventModel extends Observable {
       Object.assign(selectedTripEvent, updatedTripEvent);
       this._notify(updateType, tripEvent);
     } catch(error) {
-      throw error;
+      throw new Error(`Update error: ${error.message}`);
     }
   };
 
@@ -104,7 +104,7 @@ export default class TripEventModel extends Observable {
       this.#tripEvents = removeItem(this.#tripEvents, selectedTripEvent);
       this._notify(updateType);
     } catch(error) {
-      throw error;
+      throw new Error(`Delete error: ${error.message}`);
     }
   };
 

@@ -3,6 +3,7 @@ import TripEventView from '../view/event-view/trip-event-view';
 import { replace } from '../framework/render';
 import { UserAction, UpdateType, FormMode } from '../const';
 import { isDatesEqual } from '../utils/date';
+import { isEscKeydown } from '../utils/common';
 
 export default class EventPresenter {
   #tripEvent = null;
@@ -164,7 +165,7 @@ export default class EventPresenter {
   );
 
   #onEscKeydown = (evt) => {
-    if (evt.key === 'Escape') {
+    if (isEscKeydown(evt)) {
       evt.stopPropagation();
       this.mode = FormMode.VIEW;
     }

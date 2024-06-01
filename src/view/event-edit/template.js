@@ -1,6 +1,7 @@
 import { EVENT_TYPES, DateFormats, ButtonTypes } from '../../const';
 import { displayDateTime } from '../../utils/date';
 import { firstLetterUpperCase, getIsCheckedAttr, getIsDisabledAttr } from '../../utils/common';
+import { getDestination, getTypedOffers } from '../../model/utils/common';
 import he from 'he';
 
 const getTypeItemTemplate = (type, isChecked) => `
@@ -119,8 +120,8 @@ const getDestinationTemplate = (destination) => {
 
 const getEventEditTemplate = (tripEvent, offers, destinations) => {
   const { type, dateFrom, dateTo, basePrice, isAdding, isSaving, isDeleting } = tripEvent;
-  const eventDestination = destinations.find((destination) => destination.id === tripEvent.destination);
-  const { offers: typedOffers } = offers.find((offer) => offer.type === type);
+  const eventDestination = getDestination(destinations, tripEvent.destination);
+  const { offers: typedOffers } = getTypedOffers(offers, type);
   const tripOffers = typedOffers.map((offer) => ({
     ...offer,
     type: type,

@@ -1,6 +1,7 @@
 import { render, RenderPosition } from '../framework/render.js';
 import EventEditView from '../view/event-edit/event-edit-view.js';
 import { UserAction, UpdateType } from '../const.js';
+import { isEscKeydown } from '../utils/common.js';
 
 export default class NewEventPresenter {
   #container = null;
@@ -58,7 +59,7 @@ export default class NewEventPresenter {
   #onFormCancel = () => this.destroy();
 
   #onEscKeydown = (evt) => {
-    if (evt.key === 'Escape') {
+    if (isEscKeydown(evt)) {
       evt.stopPropagation();
       this.destroy();
     }
