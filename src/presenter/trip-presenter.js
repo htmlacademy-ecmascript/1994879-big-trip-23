@@ -46,16 +46,6 @@ export default class TripPresenter {
     return getSorted(filteredTripEvents, this.#model.currentSort);
   }
 
-  #renderMessageView = (message) => {
-    this.#tripMessageView = new TripMessageView({ message, container: this.#container });
-  };
-
-  #clearMessageView = () => {
-    if (this.#tripMessageView) {
-      this.#tripMessageView.destroy();
-    }
-  };
-
   #renderSortView = () => {
     this.#tripSortView = new TripSortView({
       currentSort: this.#model.currentSort,
@@ -77,26 +67,35 @@ export default class TripPresenter {
     });
   };
 
-  #getTripMessage = () => {
-    if (this.#isLoading) {
-      return Messages.LOADING;
-    }
+  #renderMessageView = () => {
+    const getMessage = () => {
+      switch (true) {
+        case this.#isLoading:
+          return Messages.LOADING;
+        case this.#isError:
+          return Messages.ERROR;
+        case isEmpty(this.tripEvents):
+          return TripEmptyMessages[this.#model.currentFilter];
+        default:
+          return '';
+      }
+    };
 
-    if (this.#isError) {
-      return Messages.ERROR;
+    const message = getMessage();
+    if (message) {
+      this.#tripMessageView = new TripMessageView({ message, container: this.#container });
     }
+    return !!message;
+  };
 
-    if (isEmpty(this.tripEvents)) {
-      return TripEmptyMessages[this.#model.currentFilter];
+  #clearMessageView = () => {
+    if (this.#tripMessageView) {
+      this.#tripMessageView.destroy();
     }
-    return '';
   };
 
   #renderTripEvents = () => {
-    const message = this.#getTripMessage();
-    if (message) {
-      this.#setAddButtonDisabled(this.#isLoading);
-      this.#renderMessageView(message);
+    if (this.#renderMessageView()) {
       return;
     }
 
@@ -138,7 +137,10 @@ export default class TripPresenter {
     this.#setAddButtonDisabled(true);
   };
 
-  #onNewEventClose = () => this.#setAddButtonDisabled(false);
+  #onNewEventClose = () => {
+    this.#setAddButtonDisabled(false);
+    this.#renderMessageView();
+  };
 
   #onTripEventChange = async (actionType, updateType, data) => {
     this.#uiBlocker.block();

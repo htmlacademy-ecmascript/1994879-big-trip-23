@@ -1,12 +1,11 @@
-const ONE_MINUTE_IN_MS = 60000;
 const DEFAULT_EVENT_TYPE = 'flight';
 const DEFAULT_FILTER = 'everything';
 const DEFAULT_SORT_TYPE = 'day';
 
 const BLANK_TRIP_EVENT = {
   type: DEFAULT_EVENT_TYPE,
-  dateFrom: new Date(),
-  dateTo: new Date(Date.now() + ONE_MINUTE_IN_MS),
+  dateFrom: '',
+  dateTo: '',
   destination: '',
   basePrice: 0,
   offers: [],
@@ -63,7 +62,6 @@ const DateFormats = {
   DATE_TIME_SYSTEM: 'YYYY-MM-DDTHH:mm',
   DATE_TIME: 'DD/MM/YY HH:mm',
   FLATPICKR: 'd/m/y H:i',
-  DAY: 'DD[d] HH[h] mm[m]',
   HOUR: 'HH[h] mm[m]',
   MINUTE: 'mm[m]',
 };

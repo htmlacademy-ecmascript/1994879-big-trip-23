@@ -1,6 +1,6 @@
 import { EVENT_TYPES, DateFormats, ButtonTypes } from '../../const';
 import { displayDateTime } from '../../utils/date';
-import { firstLetterUpperCase, getIsCheckedAttr, getIsDisabledAttr } from '../../utils/common';
+import { firstLetterUpperCase, getIsCheckedAttr, getIsDisabledAttr, isEmpty } from '../../utils/common';
 import { getDestination, getTypedOffers } from '../../model/utils/common';
 import he from 'he';
 
@@ -110,7 +110,7 @@ const getDestinationTemplate = (destination) => {
     return '';
   }
   const { description, pictures } = destination;
-  return !description || !pictures.length ? '' : `
+  return !description && isEmpty(pictures) ? '' : `
     <section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${description}</p>
@@ -129,19 +129,21 @@ const getEventEditTemplate = (tripEvent, offers, destinations) => {
   }));
 
   return `
-  <form class="event event--edit" action="#" method="post">
-    <header class="event__header">
-      ${getTypesTemplate(type)}
-      ${getEventDestination(type, eventDestination, destinations)}
-      ${getTimePeriodTemplate(dateFrom, dateTo)}
-      ${getPriceTemplate(basePrice)}
-      ${getButtonsTemplate(isAdding, isSaving, isDeleting)}
-    </header>
-    <section class="event__details">
-      ${getOffersTemplate(tripOffers)}
-      ${getDestinationTemplate(eventDestination)}
-    </section>
-  </form>`;
+  <li class="trip-events__item">
+    <form class="event event--edit" action="#" method="post">
+      <header class="event__header">
+        ${getTypesTemplate(type)}
+        ${getEventDestination(type, eventDestination, destinations)}
+        ${getTimePeriodTemplate(dateFrom, dateTo)}
+        ${getPriceTemplate(basePrice)}
+        ${getButtonsTemplate(isAdding, isSaving, isDeleting)}
+      </header>
+      <section class="event__details">
+        ${getOffersTemplate(tripOffers)}
+        ${getDestinationTemplate(eventDestination)}
+      </section>
+    </form>
+  </li>`;
 };
 
 export { getEventEditTemplate };

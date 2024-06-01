@@ -110,10 +110,7 @@ export default class EventEditView extends AbstractStatefulView {
     if (this._state.type === type) {
       return;
     }
-    this.updateElement({
-      type,
-      offers: [],
-    });
+    this.updateElement({ type, offers: [] });
   };
 
   #onDestinationChange = (evt) => {
@@ -121,9 +118,7 @@ export default class EventEditView extends AbstractStatefulView {
     if (!destination || this._state.destination === destination.id) {
       return;
     }
-    this.updateElement({
-      destination: destination.id,
-    });
+    this.updateElement({ destination: destination.id });
   };
 
   #onPriceInput = (evt) => {
@@ -132,21 +127,15 @@ export default class EventEditView extends AbstractStatefulView {
 
   #onPriceChange = (evt) => {
     const price = getInteger(evt.target.value);
-    this.updateElement({
-      basePrice: price,
-    });
+    this.updateElement({ basePrice: price });
   };
 
   #onDateFromChange = ([date]) => {
-    this.updateElement({
-      dateFrom: date,
-    });
+    this.updateElement({ dateFrom: date });
   };
 
   #onDateToChange = ([date]) => {
-    this.updateElement({
-      dateTo: date,
-    });
+    this.updateElement({ dateTo: date });
   };
 
   #onOfferClick = (evt) => {
@@ -155,9 +144,7 @@ export default class EventEditView extends AbstractStatefulView {
       ? addItem(this._state.offers, offerId)
       : removeItem(this._state.offers, offerId);
 
-    this.updateElement({
-      offers,
-    });
+    this.updateElement({ offers });
   };
 
   static parseEventToState = (tripEvent) => ({

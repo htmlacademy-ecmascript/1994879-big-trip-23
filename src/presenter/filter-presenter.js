@@ -12,7 +12,6 @@ export default class FilterPresenter {
   constructor ({ container, model }) {
     this.#container = container;
     this.#model = model;
-    //this.init();
     this.#model.addObserver(this.#onModelChange);
   }
 

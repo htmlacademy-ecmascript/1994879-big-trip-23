@@ -9,14 +9,14 @@ const getDateDiff = ({ dateFrom, dateTo }) => dayjs(dateTo).diff(dateFrom);
 
 const displayDuration = (dateFrom, dateTo) => {
   const dateDelta = dayjs.duration(getDateDiff({ dateFrom, dateTo }));
-  if (dateDelta.days()) {
-    return dateDelta.format(DateFormats.DAY);
-  }
 
+  if (dateDelta.days()) {
+    const deltaInDays = dayjs(dateTo).diff(dateFrom, 'day').toString().padStart(2, '0');
+    return `${deltaInDays}D ${dateDelta.format(DateFormats.HOUR)}`;
+  }
   if (dateDelta.hours()) {
     return dateDelta.format(DateFormats.HOUR);
   }
-
   return dateDelta.format(DateFormats.MINUTE);
 };
 
