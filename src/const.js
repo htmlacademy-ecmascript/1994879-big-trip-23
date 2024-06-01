@@ -48,6 +48,13 @@ const Filters = {
   PAST: 'past',
 };
 
+const TripEmptyMessages = {
+  [Filters.EVERYTHING]: 'Click New Event to create your first point',
+  [Filters.FUTURE]: 'There are no future events now',
+  [Filters.PRESENT]: 'There are no present events now',
+  [Filters.PAST]: 'There are no past events now',
+};
+
 const DateFormats = {
   DAY_MONTH: 'D MMM',
   MONTH_DAY: 'MMM D',
@@ -98,6 +105,18 @@ const Messages = {
   ERROR: 'Failed to load latest route information'
 };
 
+const UiBlockerConfig = {
+  lowerLimit: 350,
+  upperLimit: 1000
+};
+
+const Selectors = {
+  TRIP_LIST: '.trip-events',
+  TRIP_FILTER: '.trip-controls__filters',
+  TRIP_INFO: '.trip-main',
+  ADD_BUTTON: '.trip-main__event-add-btn',
+};
+
 export {
   BLANK_TRIP_EVENT,
   EVENT_TYPES,
@@ -106,11 +125,14 @@ export {
   SortTypes,
   SortInputTypes,
   Filters,
+  TripEmptyMessages,
   DateFormats,
   ButtonTypes,
   DefaultFlatpickrConfig,
   UserAction,
   UpdateType,
   FormMode,
-  Messages
+  Messages,
+  UiBlockerConfig,
+  Selectors
 };

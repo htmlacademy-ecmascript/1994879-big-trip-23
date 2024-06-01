@@ -41,22 +41,50 @@ export default class EventPresenter {
     this.#mode = newMode;
   }
 
-  init(tripEvent) {
+  init = (tripEvent) => {
     this.#tripEvent = tripEvent;
     this.#renderTripEvent(tripEvent);
-  }
+  };
 
-  destroy() {
+  destroy = () => {
     this.#tripEventView.destroy();
     this.#eventEditView.destroy();
     this.#removeListeners();
-  }
+  };
 
-  resetView() {
+  resetView = () => {
     this.mode = FormMode.VIEW;
-  }
+  };
 
-  #renderTripEvent(tripEvent) {
+  setSaving = () => {
+    if (this.#mode === FormMode.EDIT) {
+      this.#eventEditView.updateElement({ isSaving: true });
+    }
+  };
+
+  setDeleting = () => {
+    if (this.#mode === FormMode.EDIT) {
+      this.#eventEditView.updateElement({ isDeleting: true });
+    }
+  };
+
+  setAborting = () => {
+    if (this.#mode === FormMode.VIEW) {
+      this.#tripEventView.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#eventEditView.updateElement({
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#eventEditView.shake(resetFormState);
+  };
+
+  #renderTripEvent = (tripEvent) => {
     const offers = this.#model.offers;
     const destinations = this.#model.destinations;
 
@@ -96,19 +124,19 @@ export default class EventPresenter {
 
     prevTripEventView.destroy();
     prevEventEditView.destroy();
-  }
+  };
 
-  #switchToEditMode() {
+  #switchToEditMode = () => {
     replace(this.#eventEditView, this.#tripEventView);
     this.#addListeners();
     this.#changeModeHandler();
-  }
+  };
 
-  #switchToViewMode() {
+  #switchToViewMode = () => {
     this.#eventEditView.reset(this.#tripEvent);
     replace(this.#tripEventView, this.#eventEditView);
     this.#removeListeners();
-  }
+  };
 
   #onEditClick = () => {
     this.mode = FormMode.EDIT;

@@ -5,8 +5,10 @@ import TripEventsView from '../view/trip-events-view';
 import TripMessageView from '../view/trip-message-view';
 import EventPresenter from './event-presenter';
 import NewEventPresenter from './new-event-presenter';
-import { UserAction, UpdateType, Messages, DEFAULT_SORT_TYPE, DEFAULT_FILTER } from '../const';
-import { TripEmptyMessages } from '../utils/filter';
+import { UserAction, UpdateType, Messages, TripEmptyMessages, DEFAULT_SORT_TYPE, DEFAULT_FILTER, UiBlockerConfig } from '../const';
+import UiBlocker from '../framework/ui-blocker/ui-blocker';
+import { getFiltered } from '../model/utils/filter';
+import { getSorted } from '../model/utils/sort';
 
 export default class TripPresenter {
   #model = null;
@@ -18,6 +20,8 @@ export default class TripPresenter {
   #newEventPresenter = null;
   #addButton = null;
   #isLoading = true;
+  #isError = false;
+  #uiBlocker = new UiBlocker(UiBlockerConfig);
 
   constructor({ container, model, addButton }) {
     this.#container = container;
@@ -38,15 +42,18 @@ export default class TripPresenter {
   }
 
   get tripEvents() {
-    return this.#model.tripEvents;
+    const filteredTripEvents = getFiltered(this.#model.tripEvents, this.#model.currentFilter);
+    return getSorted(filteredTripEvents, this.#model.currentSort);
   }
 
-  #renderEmptyView = () => {
-    this.#tripMessageView = new TripMessageView({ message: TripEmptyMessages[this.#model.currentFilter], container: this.#container });
+  #renderMessageView = (message) => {
+    this.#tripMessageView = new TripMessageView({ message, container: this.#container });
   };
 
-  #renderLoadingView = () => {
-    this.#tripMessageView = new TripMessageView({ message: Messages.LOADING, container: this.#container });
+  #clearMessageView = () => {
+    if (this.#tripMessageView) {
+      this.#tripMessageView.destroy();
+    }
   };
 
   #renderSortView = () => {
@@ -70,21 +77,31 @@ export default class TripPresenter {
     });
   };
 
-  #renderTripEvents = () => {
+  #getTripMessage = () => {
     if (this.#isLoading) {
-      this.#setAddButtonDisabled(this.#isLoading);
-      this.#renderLoadingView();
-      return;
+      return Messages.LOADING;
     }
 
-    const tripEvents = this.tripEvents;
-    if (isEmpty(tripEvents)) {
-      this.#renderEmptyView();
+    if (this.#isError) {
+      return Messages.ERROR;
+    }
+
+    if (isEmpty(this.tripEvents)) {
+      return TripEmptyMessages[this.#model.currentFilter];
+    }
+    return '';
+  };
+
+  #renderTripEvents = () => {
+    const message = this.#getTripMessage();
+    if (message) {
+      this.#setAddButtonDisabled(this.#isLoading);
+      this.#renderMessageView(message);
       return;
     }
 
     this.#renderSortView();
-    this.#renderTripEventsView(tripEvents);
+    this.#renderTripEventsView(this.tripEvents);
   };
 
   #clearTripEvents = (resetSortType = false) => {
@@ -94,9 +111,7 @@ export default class TripPresenter {
     if (this.#tripSortView) {
       this.#tripSortView.destroy();
     }
-    if (this.#tripMessageView) {
-      this.#tripMessageView.destroy();
-    }
+    this.#clearMessageView();
     if (resetSortType) {
       this.#model.currentSort = DEFAULT_SORT_TYPE;
     }
@@ -116,6 +131,7 @@ export default class TripPresenter {
 
   #onAddButtonClick = () => {
     this.#onTripEventModeChange();
+    this.#clearTripEvents();
     this.#model.currentSort = DEFAULT_SORT_TYPE;
     this.#model.setCurrentFilter(UpdateType.MAJOR, DEFAULT_FILTER);
     this.#newEventPresenter.init(this.#model);
@@ -124,25 +140,42 @@ export default class TripPresenter {
 
   #onNewEventClose = () => this.#setAddButtonDisabled(false);
 
-  #onTripEventChange = (actionType, updateType, data) => {
+  #onTripEventChange = async (actionType, updateType, data) => {
+    this.#uiBlocker.block();
     switch (actionType) {
-      case UserAction.UPDATE:
-        this.#model.updateTripEvent(updateType, data);
-        break;
       case UserAction.ADD:
-        this.#model.addTripEvent(updateType, data);
+        this.#newEventPresenter.setSaving();
+        try {
+          await this.#model.addTripEvent(updateType, data);
+        } catch(error) {
+          this.#newEventPresenter.setAborting();
+        }
+        break;
+      case UserAction.UPDATE:
+        this.#eventPresenters.get(data.id).setSaving();
+        try {
+          await this.#model.updateTripEvent(updateType, data);
+        } catch(error) {
+          this.#eventPresenters.get(data.id).setAborting();
+        }
         break;
       case UserAction.DELETE:
-        this.#model.deleteTripEvent(updateType, data);
+        this.#eventPresenters.get(data.id).setDeleting();
+        try {
+          await this.#model.deleteTripEvent(updateType, data);
+        } catch(error) {
+          this.#eventPresenters.get(data.id).setAborting();
+        }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #onModelChange = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#onTripEventModeChange();
         this.#eventPresenters.get(data.id).init(data);
+        this.#onTripEventModeChange();
         break;
       case UpdateType.MINOR:
         this.#clearTripEvents();
@@ -155,11 +188,12 @@ export default class TripPresenter {
       case UpdateType.INIT:
         this.#isLoading = false;
         this.#setAddButtonDisabled(this.#isLoading);
-        this.#tripMessageView.destroy();
         this.#renderTripEvents();
         break;
-
+      case UpdateType.ERROR:
+        this.#isError = true;
+        this.#renderTripEvents();
+        break;
     }
   };
-
 }
