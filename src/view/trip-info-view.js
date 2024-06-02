@@ -11,7 +11,7 @@ const getTripInfoTemplate = ({ start, middle, end, dateFrom, dateTo, cost }) => 
   return `
     <section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
-        <h1 class="trip-info__title">${start} &mdash; ${middle} &mdash; ${end}</h1>
+        <h1 class="trip-info__title">${start} ${middle ? `&mdash; ${middle} ` : ''} &mdash; ${end}</h1>
 
         <p class="trip-info__dates">${displayDateTime(dateFrom, DateFormats.DAY_MONTH)}
           &nbsp;&mdash;&nbsp;${displayDateTime(dateTo, DateFormats.DAY_MONTH)}</p>

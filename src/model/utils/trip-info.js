@@ -19,7 +19,10 @@ const getTripInfo = (tripEvents, destinations, offers) => {
   const first = tripEvents[0];
   const last = tripEvents[tripEvents.length - 1];
   const middle = tripEvents.slice(1, -1);
-  const middleDestination = middle.length === 1 ? getDestinationName(destinations, middle[0]?.destination) : '...';
+  let middleDestination = '';
+  if (middle.length) {
+    middleDestination = middle.length === 1 ? getDestinationName(destinations, middle[0].destination) : '...';
+  }
   return {
     start: getDestinationName(destinations, first.destination),
     middle: middleDestination,

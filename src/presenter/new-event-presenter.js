@@ -19,7 +19,6 @@ export default class NewEventPresenter {
     if (this.#eventEditView !== null) {
       return;
     }
-
     this.#eventEditView = new EventEditView({
       offers,
       destinations,
@@ -35,25 +34,14 @@ export default class NewEventPresenter {
     if (this.#eventEditView === null) {
       return;
     }
-
     this.#eventEditView.destroy();
     this.#eventEditView = null;
     document.removeEventListener('keydown', this.#onEscKeydown);
     this.#tripEventDestroyHandler();
   };
 
-  setSaving = () => this.#eventEditView.updateElement({ isSaving: true });
-
-  setAborting = () => {
-    const resetFormState = () => {
-      this.#eventEditView.updateElement({
-        isSaving: false,
-        isDeleting: false,
-      });
-    };
-
-    this.#eventEditView.shake(resetFormState);
-  };
+  setSaving = (saving = true) => this.#eventEditView.updateElement({ isSaving: saving });
+  setAborting = () => this.#eventEditView.shake(this.setSaving(false));
 
   #onFormSubmit = (tripEvent) => this.#tripEventChangeHandler(UserAction.ADD, UpdateType.MAJOR, tripEvent);
   #onFormCancel = () => this.destroy();

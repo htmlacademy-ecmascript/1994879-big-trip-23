@@ -60,8 +60,8 @@ const getPriceTemplate = (price) => `
   </div>
 `;
 
-const getRollupButtonTemplate = (isAdding, isDisabled) => !isAdding
-  ? `<button class="event__rollup-btn" type="button" ${getIsDisabledAttr(isDisabled)}>
+const getRollupButtonTemplate = (isAdding) => !isAdding
+  ? `<button class="event__rollup-btn" type="button"}>
       <span class="visually-hidden">Open event</span>
     </button>`
   : '';
@@ -74,7 +74,7 @@ const getButtonsTemplate = (isAdding, isSaving, isDeleting) => {
   return `
     <button class="event__save-btn  btn  btn--blue" type="submit" ${getIsDisabledAttr(isSaving)}>${saveCaption}</button>
     <button class="event__reset-btn" type="reset" ${getIsDisabledAttr(isDeleting)}>${resetCaption}</button>
-    ${getRollupButtonTemplate(isAdding, isSaving || isDeleting)}`;
+    ${getRollupButtonTemplate(isAdding)}`;
 };
 
 const getOfferItemTemplate = ({id, title, price, type, isSelected}) => `

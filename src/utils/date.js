@@ -20,11 +20,9 @@ const displayDuration = (dateFrom, dateTo) => {
   return dateDelta.format(DateFormats.MINUTE);
 };
 
-const isDatesEqual = (dateA, dateB) => ((dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D'));
-
 const displayDateMonth = (date) => date ? dayjs(date).format(DateFormats.MONTH_DAY) : '';
 const displayDate = (date) => date ? dayjs(date).format(DateFormats.DATE) : '';
 const displayTime = (time) => time ? dayjs(time).format(DateFormats.TIME) : '';
 const displayDateTime = (date, dateFormat = DateFormats.DATE_TIME_SYSTEM) => date ? dayjs(date).format(dateFormat) : '';
 
-export { getDateDiff, isDatesEqual, displayDuration, displayDate, displayDateMonth, displayTime, displayDateTime };
+export { getDateDiff, displayDuration, displayDate, displayDateMonth, displayTime, displayDateTime };

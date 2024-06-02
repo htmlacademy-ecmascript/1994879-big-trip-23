@@ -58,12 +58,9 @@ export default class EventEditView extends AbstractStatefulView {
   destroy = () => remove(this);
 
   removeElement = () => {
-    this.#dateFromPicker.destroy();
-    this.#dateFromPicker = null;
-    this.#dateToPicker.destroy();
-    this.#dateToPicker = null;
-
     super.removeElement();
+    this.#dateFromPicker.destroy();
+    this.#dateToPicker.destroy();
   };
 
   #getResetHandler = () => this._state.isAdding ? this.#onCancelForm : this.#onDeleteForm;
@@ -75,7 +72,7 @@ export default class EventEditView extends AbstractStatefulView {
         ...DefaultFlatpickrConfig,
         defaultDate: this._state.dateFrom,
         maxDate: this._state.dateTo,
-        onChange: this.#onDateFromChange,
+        onClose: this.#onDateFromChange,
       },
     );
 
@@ -85,7 +82,7 @@ export default class EventEditView extends AbstractStatefulView {
         ...DefaultFlatpickrConfig,
         defaultDate: this._state.dateTo,
         minDate: this._state.dateFrom,
-        onChange: this.#onDateToChange,
+        onClose: this.#onDateToChange,
       },
     );
   };
@@ -122,12 +119,14 @@ export default class EventEditView extends AbstractStatefulView {
   };
 
   #onPriceInput = (evt) => {
-    evt.target.value = getInteger(evt.target.value);
+    const price = getInteger(evt.target.value);
+    evt.target.value = price;
+    this.updateElement({ basePrice: price });
   };
 
-  #onPriceChange = (evt) => {
-    const price = getInteger(evt.target.value);
-    this.updateElement({ basePrice: price });
+  #onPriceChange = (/*evt*/) => {
+    //const price = getInteger(evt.target.value);
+    //this.updateElement({ basePrice: price });
   };
 
   #onDateFromChange = ([date]) => {

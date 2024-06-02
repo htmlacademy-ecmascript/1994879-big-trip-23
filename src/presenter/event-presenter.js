@@ -2,7 +2,6 @@ import EventEditView from '../view/event-edit/event-edit-view';
 import TripEventView from '../view/event-view/trip-event-view';
 import { replace } from '../framework/render';
 import { UserAction, UpdateType, FormMode } from '../const';
-import { isDatesEqual } from '../utils/date';
 import { isEscKeydown } from '../utils/common';
 
 export default class EventPresenter {
@@ -59,13 +58,13 @@ export default class EventPresenter {
 
   setSaving = () => {
     if (this.#mode === FormMode.EDIT) {
-      this.#eventEditView.updateElement({ isSaving: true });
+      this.#eventEditView.updateElement({ isSaving: true, isDeleting: false });
     }
   };
 
   setDeleting = () => {
     if (this.#mode === FormMode.EDIT) {
-      this.#eventEditView.updateElement({ isDeleting: true });
+      this.#eventEditView.updateElement({ isDeleting: true, isSaving: false });
     }
   };
 
@@ -74,14 +73,7 @@ export default class EventPresenter {
       this.#tripEventView.shake();
       return;
     }
-
-    const resetFormState = () => {
-      this.#eventEditView.updateElement({
-        isSaving: false,
-        isDeleting: false,
-      });
-    };
-
+    const resetFormState = () => this.#eventEditView.updateElement({ isSaving: false, isDeleting: false });
     this.#eventEditView.shake(resetFormState);
   };
 
@@ -150,15 +142,8 @@ export default class EventPresenter {
   #addListeners = () => document.addEventListener('keydown', this.#onEscKeydown);
   #removeListeners = () => document.removeEventListener('keydown', this.#onEscKeydown);
 
-  #onFormDelete = (tripEvent) => {
-    this.#tripEventChangeHandler(UserAction.DELETE, UpdateType.MINOR, tripEvent);
-  };
-
-  #onFormSubmit = (tripEvent) => {
-    const isMinorUpdate = !isDatesEqual(this.#tripEvent.dateFrom, tripEvent.dateFrom) ||
-      !isDatesEqual(this.#tripEvent.dateTo, tripEvent.dateTo) ;
-    this.#tripEventChangeHandler(UserAction.UPDATE, isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH, tripEvent);
-  };
+  #onFormDelete = (tripEvent) => this.#tripEventChangeHandler(UserAction.DELETE, UpdateType.MINOR, tripEvent);
+  #onFormSubmit = (tripEvent) => this.#tripEventChangeHandler(UserAction.UPDATE, UpdateType.MINOR, tripEvent);
 
   #onFavoriteClick = () => this.#tripEventChangeHandler(UserAction.UPDATE, UpdateType.PATCH,
     { ...this.#tripEvent, isFavorite: !this.#tripEvent.isFavorite }
