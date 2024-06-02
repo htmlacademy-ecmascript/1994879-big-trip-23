@@ -1,6 +1,6 @@
 import { displayDate, displayDateMonth, displayTime, displayDateTime, displayDuration } from '../../utils/date';
 import { isEmpty } from '../../utils/common';
-import { getDestination, getTypedOffers } from '../../model/utils/common';
+import { getDestination, getEventOffers } from '../../model/utils/common';
 import he from 'he';
 
 const getEventScheduleTemplate = (dateFrom, dateTo) => `
@@ -27,8 +27,8 @@ const getTripEventTemplate = (tripEvent, offers, destinations) => {
   const {type, dateFrom, dateTo, basePrice, isFavorite} = tripEvent;
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
   const {name: destinationName} = getDestination(destinations, tripEvent.destination);
-  const {offers: typedOffers} = getTypedOffers(offers, type);
-  const selectedOffers = typedOffers.filter((offer) => tripEvent.offers.includes(offer.id));
+  const {offers: eventOffers} = getEventOffers(offers, type);
+  const selectedOffers = eventOffers.filter((offer) => tripEvent.offers.includes(offer.id));
 
   return `
   <li class="trip-events__item">

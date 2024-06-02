@@ -1,5 +1,5 @@
 import { isEmpty } from '../../utils/common';
-import { getTypedOffers, getDestination, getOffer } from './common';
+import { getEventOffers, getDestination, getOffer } from './common';
 
 const getDestinationName = (destinations, destinationId) => {
   const currentDestination = getDestination(destinations, destinationId);
@@ -7,8 +7,8 @@ const getDestinationName = (destinations, destinationId) => {
 };
 
 const getOfferCost = (tripEvent, offers) => {
-  const typedOffers = getTypedOffers(offers, tripEvent.type).offers;
-  return tripEvent.offers.reduce((price, offerId) => price + getOffer(typedOffers, offerId).price , 0);
+  const eventOffers = getEventOffers(offers, tripEvent.type).offers;
+  return tripEvent.offers.reduce((price, offerId) => price + getOffer(eventOffers, offerId).price , 0);
 };
 
 const getTripInfo = (tripEvents, destinations, offers) => {
