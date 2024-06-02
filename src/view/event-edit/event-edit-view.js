@@ -119,14 +119,12 @@ export default class EventEditView extends AbstractStatefulView {
   };
 
   #onPriceInput = (evt) => {
-    const price = getInteger(evt.target.value);
-    evt.target.value = price;
-    this.updateElement({ basePrice: price });
+    evt.target.value = getInteger(evt.target.value);
   };
 
-  #onPriceChange = (/*evt*/) => {
-    //const price = getInteger(evt.target.value);
-    //this.updateElement({ basePrice: price });
+  #onPriceChange = (evt) => {
+    const price = getInteger(evt.target.value);
+    this._setState({ basePrice: price });
   };
 
   #onDateFromChange = ([date]) => {
