@@ -1,6 +1,7 @@
 import { EVENT_TYPES, DateFormats, ButtonTypes } from '../../const';
 import { displayDateTime } from '../../utils/date';
-import { firstLetterUpperCase, getIsCheckedAttr, getIsDisabledAttr } from '../../utils/common';
+import { firstLetterUpperCase, getIsCheckedAttr, getIsDisabledAttr, isEmpty } from '../../utils/common';
+import { getDestination, getEventOffers } from '../../model/utils/common';
 import he from 'he';
 
 const getTypeItemTemplate = (type, isChecked) => `
@@ -59,8 +60,8 @@ const getPriceTemplate = (price) => `
   </div>
 `;
 
-const getRollupButtonTemplate = (isAdding, isDisabled) => !isAdding
-  ? `<button class="event__rollup-btn" type="button" ${getIsDisabledAttr(isDisabled)}>
+const getRollupButtonTemplate = (isAdding) => !isAdding
+  ? `<button class="event__rollup-btn" type="button"}>
       <span class="visually-hidden">Open event</span>
     </button>`
   : '';
@@ -73,7 +74,7 @@ const getButtonsTemplate = (isAdding, isSaving, isDeleting) => {
   return `
     <button class="event__save-btn  btn  btn--blue" type="submit" ${getIsDisabledAttr(isSaving)}>${saveCaption}</button>
     <button class="event__reset-btn" type="reset" ${getIsDisabledAttr(isDeleting)}>${resetCaption}</button>
-    ${getRollupButtonTemplate(isAdding, isSaving || isDeleting)}`;
+    ${getRollupButtonTemplate(isAdding)}`;
 };
 
 const getOfferItemTemplate = ({id, title, price, type, isSelected}) => `
@@ -109,7 +110,7 @@ const getDestinationTemplate = (destination) => {
     return '';
   }
   const { description, pictures } = destination;
-  return !description || !pictures.length ? '' : `
+  return !description && isEmpty(pictures) ? '' : `
     <section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${description}</p>
@@ -119,28 +120,30 @@ const getDestinationTemplate = (destination) => {
 
 const getEventEditTemplate = (tripEvent, offers, destinations) => {
   const { type, dateFrom, dateTo, basePrice, isAdding, isSaving, isDeleting } = tripEvent;
-  const eventDestination = destinations.find((destination) => destination.id === tripEvent.destination);
-  const { offers: typedOffers } = offers.find((offer) => offer.type === type);
-  const tripOffers = typedOffers.map((offer) => ({
+  const eventDestination = getDestination(destinations, tripEvent.destination);
+  const { offers: eventOffers } = getEventOffers(offers, type);
+  const tripOffers = eventOffers.map((offer) => ({
     ...offer,
     type: type,
     isSelected: tripEvent.offers.includes(offer.id)
   }));
 
   return `
-  <form class="event event--edit" action="#" method="post">
-    <header class="event__header">
-      ${getTypesTemplate(type)}
-      ${getEventDestination(type, eventDestination, destinations)}
-      ${getTimePeriodTemplate(dateFrom, dateTo)}
-      ${getPriceTemplate(basePrice)}
-      ${getButtonsTemplate(isAdding, isSaving, isDeleting)}
-    </header>
-    <section class="event__details">
-      ${getOffersTemplate(tripOffers)}
-      ${getDestinationTemplate(eventDestination)}
-    </section>
-  </form>`;
+  <li class="trip-events__item">
+    <form class="event event--edit" action="#" method="post">
+      <header class="event__header">
+        ${getTypesTemplate(type)}
+        ${getEventDestination(type, eventDestination, destinations)}
+        ${getTimePeriodTemplate(dateFrom, dateTo)}
+        ${getPriceTemplate(basePrice)}
+        ${getButtonsTemplate(isAdding, isSaving, isDeleting)}
+      </header>
+      <section class="event__details">
+        ${getOffersTemplate(tripOffers)}
+        ${getDestinationTemplate(eventDestination)}
+      </section>
+    </form>
+  </li>`;
 };
 
 export { getEventEditTemplate };

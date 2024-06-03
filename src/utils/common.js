@@ -15,6 +15,8 @@ const getInteger = (str) => {
   return isNaN(num) ? 0 : num;
 };
 
+const isEscKeydown = (evt) => evt.key === 'Escape';
+
 export {
   firstLetterUpperCase,
   isEmpty,
@@ -22,5 +24,6 @@ export {
   getIsDisabledAttr,
   addItem,
   removeItem,
-  getInteger
+  getInteger,
+  isEscKeydown
 };

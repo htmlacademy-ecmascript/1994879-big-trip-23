@@ -1,12 +1,11 @@
-const ONE_MINUTE_IN_MS = 60000;
 const DEFAULT_EVENT_TYPE = 'flight';
 const DEFAULT_FILTER = 'everything';
 const DEFAULT_SORT_TYPE = 'day';
 
 const BLANK_TRIP_EVENT = {
   type: DEFAULT_EVENT_TYPE,
-  dateFrom: new Date(),
-  dateTo: new Date(Date.now() + ONE_MINUTE_IN_MS),
+  dateFrom: '',
+  dateTo: '',
   destination: '',
   basePrice: 0,
   offers: [],
@@ -48,6 +47,13 @@ const Filters = {
   PAST: 'past',
 };
 
+const TripEmptyMessages = {
+  [Filters.EVERYTHING]: 'Click New Event to create your first point',
+  [Filters.FUTURE]: 'There are no future events now',
+  [Filters.PRESENT]: 'There are no present events now',
+  [Filters.PAST]: 'There are no past events now',
+};
+
 const DateFormats = {
   DAY_MONTH: 'D MMM',
   MONTH_DAY: 'MMM D',
@@ -56,7 +62,6 @@ const DateFormats = {
   DATE_TIME_SYSTEM: 'YYYY-MM-DDTHH:mm',
   DATE_TIME: 'DD/MM/YY HH:mm',
   FLATPICKR: 'd/m/y H:i',
-  DAY: 'DD[d] HH[h] mm[m]',
   HOUR: 'HH[h] mm[m]',
   MINUTE: 'mm[m]',
 };
@@ -98,6 +103,18 @@ const Messages = {
   ERROR: 'Failed to load latest route information'
 };
 
+const UiBlockerConfig = {
+  lowerLimit: 350,
+  upperLimit: 1000
+};
+
+const Selectors = {
+  TRIP_LIST: '.trip-events',
+  TRIP_FILTER: '.trip-controls__filters',
+  TRIP_INFO: '.trip-main',
+  ADD_BUTTON: '.trip-main__event-add-btn',
+};
+
 export {
   BLANK_TRIP_EVENT,
   EVENT_TYPES,
@@ -106,11 +123,14 @@ export {
   SortTypes,
   SortInputTypes,
   Filters,
+  TripEmptyMessages,
   DateFormats,
   ButtonTypes,
   DefaultFlatpickrConfig,
   UserAction,
   UpdateType,
   FormMode,
-  Messages
+  Messages,
+  UiBlockerConfig,
+  Selectors
 };

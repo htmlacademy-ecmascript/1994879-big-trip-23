@@ -2,12 +2,13 @@ import TripPresenter from './presenter/trip-presenter';
 import FilterPresenter from './presenter/filter-presenter';
 import TripEventModel from './model/trip-event-model';
 import TripInfoPresenter from './presenter/trip-info-presenter';
+import { Selectors } from './const';
 
 const start = async () => {
-  const eventsElement = document.querySelector('.trip-events');
-  const filtersElement = document.querySelector('.trip-controls__filters');
-  const headerMainElement = document.querySelector('.trip-main');
-  const addButtonElement = document.querySelector('.trip-main__event-add-btn');
+  const eventsElement = document.querySelector(Selectors.TRIP_LIST);
+  const filtersElement = document.querySelector(Selectors.TRIP_FILTER);
+  const headerMainElement = document.querySelector(Selectors.TRIP_INFO);
+  const addButtonElement = document.querySelector(Selectors.ADD_BUTTON);
 
   const tripEventModel = new TripEventModel();
   new TripInfoPresenter({ container: headerMainElement, model: tripEventModel });
