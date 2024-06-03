@@ -118,22 +118,13 @@ export default class EventEditView extends AbstractStatefulView {
     this.updateElement({ destination: destination.id });
   };
 
+  #onPriceChange = (evt) => this._setState({ basePrice: getInteger(evt.target.value) });
   #onPriceInput = (evt) => {
     evt.target.value = getInteger(evt.target.value);
   };
 
-  #onPriceChange = (evt) => {
-    const price = getInteger(evt.target.value);
-    this._setState({ basePrice: price });
-  };
-
-  #onDateFromChange = ([date]) => {
-    this.updateElement({ dateFrom: date });
-  };
-
-  #onDateToChange = ([date]) => {
-    this.updateElement({ dateTo: date });
-  };
+  #onDateFromChange = ([date]) => this.updateElement({ dateFrom: date });
+  #onDateToChange = ([date]) => this.updateElement({ dateTo: date });
 
   #onOfferClick = (evt) => {
     const { dataset: { offerId }, checked } = evt.target;
@@ -141,7 +132,7 @@ export default class EventEditView extends AbstractStatefulView {
       ? addItem(this._state.offers, offerId)
       : removeItem(this._state.offers, offerId);
 
-    this.updateElement({ offers });
+    this._setState({ offers });
   };
 
   static parseEventToState = (tripEvent) => ({

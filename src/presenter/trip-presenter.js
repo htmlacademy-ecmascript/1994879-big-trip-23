@@ -85,7 +85,7 @@ export default class TripPresenter {
     if (message) {
       this.#tripMessageView = new TripMessageView({ message, container: this.#container });
     }
-    return !!message;
+    return Boolean(message);
   };
 
   #clearMessageView = () => {

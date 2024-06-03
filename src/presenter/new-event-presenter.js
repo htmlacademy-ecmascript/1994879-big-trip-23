@@ -40,7 +40,7 @@ export default class NewEventPresenter {
     this.#tripEventDestroyHandler();
   };
 
-  setSaving = (saving = true) => this.#eventEditView.updateElement({ isSaving: saving });
+  setSaving = (isSaving = true) => this.#eventEditView.updateElement({ isSaving });
   setAborting = () => this.#eventEditView.shake(this.setSaving(false));
 
   #onFormSubmit = (tripEvent) => this.#tripEventChangeHandler(UserAction.ADD, UpdateType.MAJOR, tripEvent);

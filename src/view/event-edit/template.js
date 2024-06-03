@@ -79,8 +79,8 @@ const getButtonsTemplate = (isAdding, isSaving, isDeleting) => {
 
 const getOfferItemTemplate = ({id, title, price, type, isSelected}) => `
   <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox" name="event-offer-${type}"
-      data-offer-id=${id} ${getIsCheckedAttr(isSelected)}>
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox"
+      name="event-offer-${type}" data-offer-id=${id} ${getIsCheckedAttr(isSelected)}>
     <label class="event__offer-label" for="event-offer-${type}-${id}">
       <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
