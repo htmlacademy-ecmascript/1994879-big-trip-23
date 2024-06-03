@@ -6,7 +6,7 @@ import { getEventEditTemplate } from './template';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-export default class EventEditView extends AbstractStatefulView {
+export default class TripEventEditView extends AbstractStatefulView {
   #offers = null;
   #destinations = null;
   #submitButtonHandler = null;
@@ -17,7 +17,7 @@ export default class EventEditView extends AbstractStatefulView {
 
   constructor({tripEvent = BLANK_TRIP_EVENT, offers, destinations, onFormSubmit, onFormDelete, onFormCancel}) {
     super();
-    this._setState(EventEditView.parseEventToState(tripEvent));
+    this._setState(TripEventEditView.parseEventToState(tripEvent));
     this.#offers = offers;
     this.#destinations = destinations;
     this.#submitButtonHandler = onFormSubmit;
@@ -89,12 +89,12 @@ export default class EventEditView extends AbstractStatefulView {
 
   #onFormSubmit = (evt) => {
     evt.preventDefault();
-    this.#submitButtonHandler(EventEditView.parseStateToEvent(this._state));
+    this.#submitButtonHandler(TripEventEditView.parseStateToEvent(this._state));
   };
 
   #onDeleteForm = (evt) => {
     evt.preventDefault();
-    this.#deleteButtonHandler(EventEditView.parseStateToEvent(this._state));
+    this.#deleteButtonHandler(TripEventEditView.parseStateToEvent(this._state));
   };
 
   #onCancelForm = (evt) => {
