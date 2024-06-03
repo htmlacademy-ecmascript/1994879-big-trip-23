@@ -6,7 +6,7 @@ const getDestinationName = (destinations, destinationId) => {
   return currentDestination ? currentDestination.name : '';
 };
 
-const getOfferCost = (tripEvent, offers) => {
+const getOffersCost = (tripEvent, offers) => {
   const eventOffers = getEventOffers(offers, tripEvent.type).offers;
   return tripEvent.offers.reduce((price, offerId) => price + getOffer(eventOffers, offerId).price , 0);
 };
@@ -27,7 +27,7 @@ const getTripInfo = (tripEvents, destinations, offers) => {
     dateFrom: first.dateFrom,
     dateTo: last.dateTo,
     cost: tripEvents.reduce(
-      (price, tripEvent) => price + tripEvent.basePrice + getOfferCost(tripEvent, offers), 0),
+      (price, tripEvent) => price + tripEvent.basePrice + getOffersCost(tripEvent, offers), 0),
   };
 };
 

@@ -41,9 +41,7 @@ export default class FilterPresenter {
     prevTripFiltersView.destroy();
   };
 
-  #onFilterChange = (filterType) => {
-    this.#model.setCurrentFilter(UpdateType.MAJOR, filterType);
-  };
+  #onFilterChange = (filterType) => this.#model.setCurrentFilter(UpdateType.MAJOR, filterType);
 
   #onModelChange = () => this.#renderFilters(this.#model);
 }

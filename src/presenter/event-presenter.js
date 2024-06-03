@@ -131,6 +131,9 @@ export default class EventPresenter {
     this.#removeListeners();
   };
 
+  #addListeners = () => document.addEventListener('keydown', this.#onEscKeydown);
+  #removeListeners = () => document.removeEventListener('keydown', this.#onEscKeydown);
+
   #onEditClick = () => {
     this.mode = FormMode.EDIT;
   };
@@ -138,9 +141,6 @@ export default class EventPresenter {
   #onFormCancel = () => {
     this.mode = FormMode.VIEW;
   };
-
-  #addListeners = () => document.addEventListener('keydown', this.#onEscKeydown);
-  #removeListeners = () => document.removeEventListener('keydown', this.#onEscKeydown);
 
   #onFormDelete = (tripEvent) => this.#tripEventChangeHandler(UserAction.DELETE, UpdateType.MINOR, tripEvent);
   #onFormSubmit = (tripEvent) => this.#tripEventChangeHandler(UserAction.UPDATE, UpdateType.MINOR, tripEvent);
