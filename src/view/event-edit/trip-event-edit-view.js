@@ -123,8 +123,8 @@ export default class TripEventEditView extends AbstractStatefulView {
     evt.target.value = getInteger(evt.target.value);
   };
 
-  #onDateFromChange = ([date]) => this.updateElement({ dateFrom: date });
-  #onDateToChange = ([date]) => this.updateElement({ dateTo: date });
+  #onDateFromChange = ([dateFrom]) => this.updateElement({ dateFrom });
+  #onDateToChange = ([dateTo]) => this.updateElement({ dateTo });
 
   #onOfferClick = (evt) => {
     const { dataset: { offerId }, checked } = evt.target;
