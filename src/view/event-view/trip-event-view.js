@@ -7,8 +7,8 @@ export default class TripEventView extends AbstractView {
   #tripEvent = null;
   #offers = null;
   #destinations = null;
-  #editClickHandler = null;
-  #favoriteClickHandler = null;
+  #rollupButtonClickHandler = null;
+  #favoriteButtonClickHandler = null;
   #rollupButtonElement = null;
   #favoriteButtonElement = null;
 
@@ -17,13 +17,13 @@ export default class TripEventView extends AbstractView {
     this.#tripEvent = tripEvent;
     this.#offers = offers;
     this.#destinations = destinations;
-    this.#editClickHandler = onEditClick;
-    this.#favoriteClickHandler = onFavoriteClick;
+    this.#rollupButtonClickHandler = onEditClick;
+    this.#favoriteButtonClickHandler = onFavoriteClick;
     this.#rollupButtonElement = this.element.querySelector('.event__rollup-btn');
     this.#favoriteButtonElement = this.element.querySelector('.event__favorite-btn');
 
-    this.#rollupButtonElement.addEventListener('click', this.#onClick);
-    this.#favoriteButtonElement.addEventListener('click', this.#onFavoriteClick);
+    this.#rollupButtonElement.addEventListener('click', this.#onRollupButtonClick);
+    this.#favoriteButtonElement.addEventListener('click', this.#onFavoriteButtonClick);
     render(this, container);
   }
 
@@ -35,17 +35,17 @@ export default class TripEventView extends AbstractView {
 
   removeElement = () => {
     super.removeElement();
-    this.#rollupButtonElement.removeEventListener('click', this.#onClick);
-    this.#favoriteButtonElement.removeEventListener('click', this.#onFavoriteClick);
+    this.#rollupButtonElement.removeEventListener('click', this.#onRollupButtonClick);
+    this.#favoriteButtonElement.removeEventListener('click', this.#onFavoriteButtonClick);
   };
 
-  #onClick = (evt) => {
+  #onRollupButtonClick = (evt) => {
     evt.preventDefault();
-    this.#editClickHandler();
+    this.#rollupButtonClickHandler();
   };
 
-  #onFavoriteClick = (evt) => {
+  #onFavoriteButtonClick = (evt) => {
     evt.preventDefault();
-    this.#favoriteClickHandler();
+    this.#favoriteButtonClickHandler();
   };
 }

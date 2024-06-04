@@ -1,4 +1,4 @@
-import EventEditView from '../view/event-edit/event-edit-view';
+import TripEventEditView from '../view/event-edit/trip-event-edit-view';
 import TripEventView from '../view/event-view/trip-event-view';
 import { replace } from '../framework/render';
 import { UserAction, UpdateType, FormMode } from '../const';
@@ -9,7 +9,7 @@ export default class EventPresenter {
   #model = null;
   #container = null;
   #tripEventView = null;
-  #eventEditView = null;
+  #tripEventEditView = null;
   #tripEventChangeHandler = null;
   #changeModeHandler = null;
   #mode = FormMode.VIEW;
@@ -48,7 +48,7 @@ export default class EventPresenter {
 
   destroy = () => {
     this.#tripEventView.destroy();
-    this.#eventEditView.destroy();
+    this.#tripEventEditView.destroy();
     this.#removeListeners();
   };
 
@@ -58,13 +58,13 @@ export default class EventPresenter {
 
   setSaving = () => {
     if (this.#mode === FormMode.EDIT) {
-      this.#eventEditView.updateElement({ isSaving: true, isDeleting: false });
+      this.#tripEventEditView.updateElement({ isSaving: true, isDeleting: false });
     }
   };
 
   setDeleting = () => {
     if (this.#mode === FormMode.EDIT) {
-      this.#eventEditView.updateElement({ isDeleting: true, isSaving: false });
+      this.#tripEventEditView.updateElement({ isDeleting: true, isSaving: false });
     }
   };
 
@@ -73,8 +73,8 @@ export default class EventPresenter {
       this.#tripEventView.shake();
       return;
     }
-    const resetFormState = () => this.#eventEditView.updateElement({ isSaving: false, isDeleting: false });
-    this.#eventEditView.shake(resetFormState);
+    const resetFormState = () => this.#tripEventEditView.updateElement({ isSaving: false, isDeleting: false });
+    this.#tripEventEditView.shake(resetFormState);
   };
 
   #renderTripEvent = (tripEvent) => {
@@ -82,7 +82,7 @@ export default class EventPresenter {
     const destinations = this.#model.destinations;
 
     const prevTripEventView = this.#tripEventView;
-    const prevEventEditView = this.#eventEditView;
+    const prevTripEventEditView = this.#tripEventEditView;
 
     this.#tripEventView = new TripEventView({
       tripEvent,
@@ -93,7 +93,7 @@ export default class EventPresenter {
       onFavoriteClick: this.#onFavoriteClick,
     });
 
-    this.#eventEditView = new EventEditView({
+    this.#tripEventEditView = new TripEventEditView({
       tripEvent,
       offers,
       destinations,
@@ -102,34 +102,37 @@ export default class EventPresenter {
       onFormCancel: this.#onFormCancel,
     });
 
-    if (prevTripEventView === null || prevEventEditView === null) {
+    if (prevTripEventView === null || prevTripEventEditView === null) {
       return;
     }
 
     if (this.mode === FormMode.EDIT) {
-      replace(this.#eventEditView, prevEventEditView);
+      replace(this.#tripEventEditView, prevTripEventEditView);
     }
 
     if (this.mode === FormMode.VIEW) {
-      this.#eventEditView.reset(tripEvent);
+      this.#tripEventEditView.reset(tripEvent);
       replace(this.#tripEventView, prevTripEventView);
     }
 
     prevTripEventView.destroy();
-    prevEventEditView.destroy();
+    prevTripEventEditView.destroy();
   };
 
   #switchToEditMode = () => {
-    replace(this.#eventEditView, this.#tripEventView);
+    replace(this.#tripEventEditView, this.#tripEventView);
     this.#addListeners();
     this.#changeModeHandler();
   };
 
   #switchToViewMode = () => {
-    this.#eventEditView.reset(this.#tripEvent);
-    replace(this.#tripEventView, this.#eventEditView);
+    this.#tripEventEditView.reset(this.#tripEvent);
+    replace(this.#tripEventView, this.#tripEventEditView);
     this.#removeListeners();
   };
+
+  #addListeners = () => document.addEventListener('keydown', this.#onEscKeydown);
+  #removeListeners = () => document.removeEventListener('keydown', this.#onEscKeydown);
 
   #onEditClick = () => {
     this.mode = FormMode.EDIT;
@@ -138,9 +141,6 @@ export default class EventPresenter {
   #onFormCancel = () => {
     this.mode = FormMode.VIEW;
   };
-
-  #addListeners = () => document.addEventListener('keydown', this.#onEscKeydown);
-  #removeListeners = () => document.removeEventListener('keydown', this.#onEscKeydown);
 
   #onFormDelete = (tripEvent) => this.#tripEventChangeHandler(UserAction.DELETE, UpdateType.MINOR, tripEvent);
   #onFormSubmit = (tripEvent) => this.#tripEventChangeHandler(UserAction.UPDATE, UpdateType.MINOR, tripEvent);

@@ -6,23 +6,23 @@ import { getEventEditTemplate } from './template';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-export default class EventEditView extends AbstractStatefulView {
+export default class TripEventEditView extends AbstractStatefulView {
   #offers = null;
   #destinations = null;
-  #submitHandler = null;
-  #deleteHandler = null;
-  #cancelHandler = null;
+  #submitButtonHandler = null;
+  #deleteButtonHandler = null;
+  #cancelButtonHandler = null;
   #dateFromPicker = null;
   #dateToPicker = null;
 
   constructor({tripEvent = BLANK_TRIP_EVENT, offers, destinations, onFormSubmit, onFormDelete, onFormCancel}) {
     super();
-    this._setState(EventEditView.parseEventToState(tripEvent));
+    this._setState(TripEventEditView.parseEventToState(tripEvent));
     this.#offers = offers;
     this.#destinations = destinations;
-    this.#submitHandler = onFormSubmit;
-    this.#deleteHandler = onFormDelete;
-    this.#cancelHandler = onFormCancel;
+    this.#submitButtonHandler = onFormSubmit;
+    this.#deleteButtonHandler = onFormDelete;
+    this.#cancelButtonHandler = onFormCancel;
 
     this._restoreHandlers();
   }
@@ -89,17 +89,17 @@ export default class EventEditView extends AbstractStatefulView {
 
   #onFormSubmit = (evt) => {
     evt.preventDefault();
-    this.#submitHandler(EventEditView.parseStateToEvent(this._state));
+    this.#submitButtonHandler(TripEventEditView.parseStateToEvent(this._state));
   };
 
   #onDeleteForm = (evt) => {
     evt.preventDefault();
-    this.#deleteHandler(EventEditView.parseStateToEvent(this._state));
+    this.#deleteButtonHandler(TripEventEditView.parseStateToEvent(this._state));
   };
 
   #onCancelForm = (evt) => {
     evt.preventDefault();
-    this.#cancelHandler();
+    this.#cancelButtonHandler();
   };
 
   #onTypeChange = (evt) => {
@@ -118,22 +118,13 @@ export default class EventEditView extends AbstractStatefulView {
     this.updateElement({ destination: destination.id });
   };
 
+  #onPriceChange = (evt) => this._setState({ basePrice: getInteger(evt.target.value) });
   #onPriceInput = (evt) => {
     evt.target.value = getInteger(evt.target.value);
   };
 
-  #onPriceChange = (evt) => {
-    const price = getInteger(evt.target.value);
-    this._setState({ basePrice: price });
-  };
-
-  #onDateFromChange = ([date]) => {
-    this.updateElement({ dateFrom: date });
-  };
-
-  #onDateToChange = ([date]) => {
-    this.updateElement({ dateTo: date });
-  };
+  #onDateFromChange = ([date]) => this.updateElement({ dateFrom: date });
+  #onDateToChange = ([date]) => this.updateElement({ dateTo: date });
 
   #onOfferClick = (evt) => {
     const { dataset: { offerId }, checked } = evt.target;
@@ -141,7 +132,7 @@ export default class EventEditView extends AbstractStatefulView {
       ? addItem(this._state.offers, offerId)
       : removeItem(this._state.offers, offerId);
 
-    this.updateElement({ offers });
+    this._setState({ offers });
   };
 
   static parseEventToState = (tripEvent) => ({

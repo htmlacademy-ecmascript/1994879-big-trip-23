@@ -1,11 +1,11 @@
 import { render, RenderPosition } from '../framework/render.js';
-import EventEditView from '../view/event-edit/event-edit-view.js';
+import TripEventEditView from '../view/event-edit/trip-event-edit-view.js';
 import { UserAction, UpdateType } from '../const.js';
 import { isEscKeydown } from '../utils/common.js';
 
 export default class NewEventPresenter {
   #container = null;
-  #eventEditView = null;
+  #tripEventEditView = null;
   #tripEventChangeHandler = null;
   #tripEventDestroyHandler = null;
 
@@ -16,32 +16,32 @@ export default class NewEventPresenter {
   }
 
   init = ({ offers, destinations }) => {
-    if (this.#eventEditView !== null) {
+    if (this.#tripEventEditView !== null) {
       return;
     }
-    this.#eventEditView = new EventEditView({
+    this.#tripEventEditView = new TripEventEditView({
       offers,
       destinations,
       onFormSubmit: this.#onFormSubmit,
       onFormCancel: this.#onFormCancel,
     });
 
-    render(this.#eventEditView, this.#container, RenderPosition.AFTERBEGIN);
+    render(this.#tripEventEditView, this.#container, RenderPosition.AFTERBEGIN);
     document.addEventListener('keydown', this.#onEscKeydown);
   };
 
   destroy = () => {
-    if (this.#eventEditView === null) {
+    if (this.#tripEventEditView === null) {
       return;
     }
-    this.#eventEditView.destroy();
-    this.#eventEditView = null;
+    this.#tripEventEditView.destroy();
+    this.#tripEventEditView = null;
     document.removeEventListener('keydown', this.#onEscKeydown);
     this.#tripEventDestroyHandler();
   };
 
-  setSaving = (saving = true) => this.#eventEditView.updateElement({ isSaving: saving });
-  setAborting = () => this.#eventEditView.shake(this.setSaving(false));
+  setSaving = (isSaving = true) => this.#tripEventEditView.updateElement({ isSaving });
+  setAborting = () => this.#tripEventEditView.shake(this.setSaving(false));
 
   #onFormSubmit = (tripEvent) => this.#tripEventChangeHandler(UserAction.ADD, UpdateType.MAJOR, tripEvent);
   #onFormCancel = () => this.destroy();
