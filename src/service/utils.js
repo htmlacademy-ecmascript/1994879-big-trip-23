@@ -1,24 +1,24 @@
-const camelToSnakeCase = (str) => str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`).replace(/^_/, '');
-const snakeToCamelCase = (str) => str.replace(/(_[a-z])/g, (_, group) => group.toUpperCase().replace('_', ''));
+const camelToSnakeCase = (input) => input.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`).replace(/^_/, '');
+const snakeToCamelCase = (input) => input.replace(/(_[a-z])/g, (_, group) => group.toUpperCase().replace('_', ''));
 
-const toSnakeCaseKeys = (obj) => {
-  const newObj = {};
+const toSnakeCaseKeys = (data) => {
+  const transformedData = {};
 
-  Object.keys(obj).forEach((key) => {
+  Object.keys(data).forEach((key) => {
     const snakeCaseKey = camelToSnakeCase(key);
-    newObj[snakeCaseKey] = obj[key];
+    transformedData[snakeCaseKey] = data[key];
   });
-  return newObj;
+  return transformedData;
 };
 
-const toCamelCaseKeys = (obj) => {
-  const newObj = {};
+const toCamelCaseKeys = (data) => {
+  const transformedData = {};
 
-  Object.keys(obj).forEach((key) => {
+  Object.keys(data).forEach((key) => {
     const camelCaseKey = snakeToCamelCase(key);
-    newObj[camelCaseKey] = obj[key];
+    transformedData[camelCaseKey] = data[key];
   });
-  return newObj;
+  return transformedData;
 };
 
 export { toSnakeCaseKeys, toCamelCaseKeys };

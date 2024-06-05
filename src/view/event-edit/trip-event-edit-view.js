@@ -33,19 +33,19 @@ export default class TripEventEditView extends AbstractStatefulView {
 
   _restoreHandlers() {
     this.element.addEventListener('submit', this.#onFormSubmit);
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#getResetHandler());
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#onResetButtonClick);
     this.element.querySelector('.event__type-group').addEventListener('change', this.#onTypeChange);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#onDestinationChange);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#onPriceChange);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#onPriceInput);
 
-    const availableOffers = this.element.querySelector('.event__available-offers');
-    if (availableOffers) {
-      availableOffers.addEventListener('change', this.#onOfferClick);
+    const availableOffersElement = this.element.querySelector('.event__available-offers');
+    if (availableOffersElement) {
+      availableOffersElement.addEventListener('change', this.#onOffersChange);
     }
     const rollupButtonElement = this.element.querySelector('.event__rollup-btn');
     if (rollupButtonElement) {
-      rollupButtonElement.addEventListener('click', this.#onCancelForm);
+      rollupButtonElement.addEventListener('click', this.#onRollupButtonClick);
     }
 
     this.#setDatePickers({
@@ -62,8 +62,6 @@ export default class TripEventEditView extends AbstractStatefulView {
     this.#dateFromPicker.destroy();
     this.#dateToPicker.destroy();
   };
-
-  #getResetHandler = () => this._state.isAdding ? this.#onCancelForm : this.#onDeleteForm;
 
   #setDatePickers = ({ startTimeElement, endTimeElement }) => {
     this.#dateFromPicker = flatpickr(
@@ -102,6 +100,9 @@ export default class TripEventEditView extends AbstractStatefulView {
     this.#cancelButtonHandler();
   };
 
+  #onRollupButtonClick = (evt) => this.#onCancelForm(evt);
+  #onResetButtonClick = (evt) => this._state.isAdding ? this.#onCancelForm(evt) : this.#onDeleteForm(evt);
+
   #onTypeChange = (evt) => {
     const type = evt.target.value;
     if (this._state.type === type) {
@@ -123,10 +124,10 @@ export default class TripEventEditView extends AbstractStatefulView {
     evt.target.value = getInteger(evt.target.value);
   };
 
-  #onDateFromChange = ([date]) => this.updateElement({ dateFrom: date });
-  #onDateToChange = ([date]) => this.updateElement({ dateTo: date });
+  #onDateFromChange = ([dateFrom]) => this.updateElement({ dateFrom });
+  #onDateToChange = ([dateTo]) => this.updateElement({ dateTo });
 
-  #onOfferClick = (evt) => {
+  #onOffersChange = (evt) => {
     const { dataset: { offerId }, checked } = evt.target;
     const offers = checked
       ? addItem(this._state.offers, offerId)
