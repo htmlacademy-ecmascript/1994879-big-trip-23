@@ -16,11 +16,11 @@ const getTripInfo = (tripEvents, destinations, offers) => {
     return {};
   }
 
-  const collapsedDestinations = destinations.reduce((acc, destination) => acc.at(-1) === destination ? acc : [...acc, destination], []);
+  const collapsedTrip = tripEvents.reduce((acc, tripEvent) => acc.at(-1) === tripEvent ? acc : [...acc, tripEvent], []);
 
-  const first = collapsedDestinations.at(0);
-  const last = collapsedDestinations.at(-1);
-  const middle = collapsedDestinations.slice(1, -1);
+  const first = collapsedTrip.at(0);
+  const last = collapsedTrip.at(-1);
+  const middle = collapsedTrip.slice(1, -1);
   const middleDestination = middle.length === 1 ? getDestinationName(destinations, middle[0].destination) : '...';
   return {
     start: getDestinationName(destinations, first.destination),
